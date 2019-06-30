@@ -1,0 +1,96 @@
+.icon-tool {
+  height: 6rem;
+  padding-left: 2rem;
+
+  button.btn-operation {
+    margin-left: 10px;
+    color: #555;
+    font-size: 0.8rem;
+    background: #fff;
+    border: none;
+    outline: none;
+    cursor: pointer;
+
+    &:hover, &:hover svg.icon-operation {
+      color: #999;
+    }
+  }
+
+  .project-create {
+    display: flex;
+    align-items: center;
+    height: 3rem;
+
+    button.btn-create {
+      margin: 0;
+      padding: 0;
+      color: #666;
+      font-size: 1rem;
+      background: #fff;
+
+      &:hover {
+        color: #999;
+      }
+    }
+
+    svg.icon-button {
+      width: 1rem;
+      height: 1rem;
+      margin-right: 5px;
+    }
+  }
+
+  .project-information {
+    display: flex;
+    align-items: center;
+    height: 2rem;
+    font-size: 0.9rem;
+
+    span.icon-count {
+      color: #555;
+    }
+
+    svg.icon-operation {
+      width: 0.9rem;
+      height: 0.9rem;
+      margin-right: 5px;
+    }
+
+    button.btn-copy {
+      position: relative;
+      
+      &:after {
+        position: absolute;
+        content: "复制链接成功";
+        left: 50%;
+        top: calc(100% + 0.5rem);
+        transform: translateX(-50%);
+        font-size: 0.8rem;
+        color: #33a3a2;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 1s ease-in 0.5s, top 1s ease-in;
+      }
+  
+      &:active:after {
+        top: 100%;
+        opacity: 1;
+        transition: all 0s;
+      }
+    }
+  }
+
+  input.select-all-icon {
+    position: relative;
+    margin-left: 10px;
+
+    &::after {
+      content: '全选';
+      position: absolute;
+      top: -3px;
+      left: 1rem;
+      color: #666;
+      white-space: nowrap;
+    }
+  }
+}

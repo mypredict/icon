@@ -1,0 +1,40 @@
+header.head-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  font-size: 1.1rem;
+  color: #33a5ad;
+  // background: #f8f8f6;
+
+  .head-portrait {
+    position: relative;
+    width: 8rem;
+    height: 8rem;
+    margin-bottom: 5px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .prompt {
+    position: absolute;
+    width: 100%;
+    height: 3rem;
+    bottom: -3rem;
+    line-height: 3rem;
+    text-align: center;
+    color: #fff;
+    background: #000;
+    opacity: 0.5;
+    transition: bottom 0.3s;
+  }
+
+  .head-portrait:hover .prompt {
+    bottom: 0;
+  }
+
+  img {
+    width: 100%;
+  }
+}

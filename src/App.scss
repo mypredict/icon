@@ -1,0 +1,11 @@
+aside.sidebar-page {
+  position: fixed;
+  width: 14rem;
+  height: 100vh;
+  background: #fff;
+  overflow-y: auto;
+  padding-bottom: 5rem;
+  border-right: 1px solid rgba(233, 238, 211, 0.9);
+  box-sizing: border-box;
+  z-index: 100;
+}
