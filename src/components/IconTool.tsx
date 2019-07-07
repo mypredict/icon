@@ -1,30 +1,22 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { State } from '../interface';
+import { bulkEditCreator, selectAllCreator } from '../redux/actions';
+import { copyString } from '../tools/index';
 import './IconTool.scss';
 
-const IconTool: React.FC = () => {
-  const [isProject, setIsProject] = useState(true);
-  const [isEdit, setIsEdit] = useState(false);
-  const [selectAll, setSelectAll] = useState(false);
+interface Props {
+  bulkEdit: boolean,
+  bulkEditCreator: Function,
+  selectAll: boolean,
+  selectAllCreator: Function
+}
 
-  function handleCopyLink(): void {
-    const input = document.createElement('input');
-    input.value = `http://www.baidu.com/`;
-    document.body.appendChild(input);
-    input.select();
-    document.execCommand('copy');
-    document.body.removeChild(input);
-  }
-
-  function handleEdit(): void {
-    setIsEdit(!isEdit);
-  }
-
-  function handleSelectAll(status: boolean): void {
-    setSelectAll(status);
-  }
+const IconTool = (props: Props) => {
+  const [isProject, setIsProject] = useState<boolean>(true);
 
   function handleDelete(): void {
-    if (isEdit) {
+    if (props.bulkEdit) {
       console.log('删除选中');
     } else {
       setIsProject(!isProject);
@@ -45,19 +37,25 @@ const IconTool: React.FC = () => {
         className="project-information"
         style={{display: isProject ? 'flex' : 'none'}}>
         <span className="icon-count">共24个图标</span>
-        <button className="btn-operation btn-copy" onClick={handleCopyLink}>
+        <button className="btn-operation btn-copy" onClick={() => copyString('123')}>
           <svg className="icon icon-operation" aria-hidden="true">
             <use xlinkHref="#icon-fuzhi" />
           </svg>
           复制链接
         </button>
+        <button className="btn-operation">
+          <svg className="icon icon-operation" aria-hidden="true">
+            <use xlinkHref="#icon-unie123" />
+          </svg>
+          上传图标
+        </button>
         <button
           className="btn-operation"
-          style={{color: isEdit ? '#33a5ad' : '#666'}}
-          onClick={handleEdit}>
+          style={{color: props.bulkEdit ? '#33a5ad' : '#666'}}
+          onClick={() => props.bulkEditCreator(!props.bulkEdit)}>
           <svg
             className="icon icon-operation"
-            style={{color: isEdit ? '#33a5ad' : '#666'}}
+            style={{color: props.bulkEdit ? '#33a5ad' : '#666'}}
             aria-hidden="true">
             <use xlinkHref="#icon-piliang-copy" />
           </svg>
@@ -67,37 +65,42 @@ const IconTool: React.FC = () => {
           <svg className="icon icon-operation" aria-hidden="true">
             <use xlinkHref="#icon-unie122" />
           </svg>
-          下载图标
+          {
+            props.bulkEdit ? '下载图标' : '下载项目'
+          }
         </button>
-        <button className="btn-operation">
-          <svg className="icon icon-operation" aria-hidden="true">
-            <use xlinkHref="#icon-unie123" />
-          </svg>
-          上传图标
-        </button>
-        <button className="btn-operation" style={{display: isEdit ? 'block' : 'none'}}>
+        <button className="btn-operation" style={{display: props.bulkEdit ? 'block' : 'none'}}>
           <svg className="icon icon-operation" aria-hidden="true">
             <use xlinkHref="#icon-yiruwenjianjia" />
           </svg>
-          移入项目
+          添加至项目
         </button>
         <button className="btn-operation" onClick={handleDelete}>
           <svg className="icon icon-operation" aria-hidden="true">
             <use xlinkHref="#icon-shanchu1" />
           </svg>
           {
-            isEdit ? '删除选中' : '删除项目'
+            props.bulkEdit ? '删除图标' : '删除项目'
           }
         </button>
         <input
-          style={{display: isEdit ? 'block' : 'none'}}
+          style={{display: props.bulkEdit ? 'block' : 'none'}}
           className="select-all-icon"
           type="checkbox"
-          checked={selectAll}
-          onChange={(event) => handleSelectAll(event.target.checked)}/>
+          checked={props.selectAll}
+          onChange={(event) => props.selectAllCreator(event.target.checked)}/>
       </div>
     </div>
   );
 };
 
-export default IconTool;
+export default connect(
+  (state: State) => ({
+    bulkEdit: state.bulkEdit,
+    selectAll: state.selectAll
+  }),
+  {
+    bulkEditCreator,
+    selectAllCreator
+  }
+)(IconTool);

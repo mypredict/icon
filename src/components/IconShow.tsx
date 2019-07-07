@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { BoolObj } from '../interface';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { BoolObj, State } from '../interface';
+import { selectAllCreator } from '../redux/actions';
+import { copyString } from '../tools/index';
 import './IconShow.scss';
 
 const iconList = [
@@ -23,19 +26,45 @@ function arrToObj(arr: Array<string>): BoolObj {
   return obj;
 }
 
-const isEdit = false;
+interface Props {
+  bulkEdit: boolean,
+  selectAll: boolean,
+  selectAllCreator: Function
+}
 
-const IconShow: React.FC = () => {
-  const [selectAllIcons, setSelectAllIcons]: [BoolObj, Function] = useState(arrToObj(iconList));
-  
-  function handleCopyCode(code: string): void {
-    console.log(code);
-  }
+const IconShow = (props: Props) => {
+  const [selectAllIcons, setSelectAllIcons] = useState<BoolObj>(arrToObj(iconList));
 
+  // 单选
   function handleSelect(selectIcon: string): void {
     const newSelectAllIcons: BoolObj = { ...selectAllIcons };
     newSelectAllIcons[selectIcon] = !newSelectAllIcons[selectIcon];
     setSelectAllIcons(newSelectAllIcons);
+  }
+
+  // 全(不)选
+  // useEffect(() => {
+  //   const newSelectAllIcons: BoolObj = { ...selectAllIcons };
+  //   for (let icon in newSelectAllIcons) {
+  //     newSelectAllIcons[icon] = selectAll;
+  //   }
+  //   setSelectAllIcons(newSelectAllIcons);
+  // }, [selectAll]);
+
+  function handleChangeName(icon: string): void {
+    console.log(icon, '修改名字');
+  }
+
+  function handleDownload(icon: string): void {
+    console.log(icon, '下载图标');
+  }
+
+  function handleDelete(icon: string): void {
+    console.log(icon, '删除图标');
+  }
+
+  function handleMove(icon: string): void {
+    console.log(icon, '添加至项目')
   }
 
   return (
@@ -45,39 +74,51 @@ const IconShow: React.FC = () => {
           <figure
             className="icon-item"
             key={iconIndex}
-            style={{border: isEdit
+            style={{border: props.bulkEdit
               ? selectAllIcons[icon] ? '1px solid #e94d0f' : '1px solid #ccc'
               : 'none'
             }}
-            onClick={() => isEdit && handleSelect(icon)}>
+            onClick={() => props.bulkEdit && handleSelect(icon)}>
             <svg className="icon icon-self" aria-hidden="true">
               <use xlinkHref="#icon-yiruwenjianjia" />
             </svg>
             <figcaption>{icon}</figcaption>
-            <div className="icon-operation" style={{display: isEdit ? 'none' : 'flex'}}>
-              <div className="icon-tool-container" title="修改代码名称">
+            <div
+              className="icon-operation"
+              style={{display: props.bulkEdit ? 'none' : 'flex'}}>
+              <div
+                className="icon-tool-container"
+                title="修改代码名称"
+                onClick={() => handleChangeName(icon)}>
                 <svg className="icon icon-tool" aria-hidden="true">
                   <use xlinkHref="#icon-grammar" />
                 </svg>
               </div>
-              <div className="icon-tool-container" title="下载图标">
+              <div
+                className="icon-tool-container"
+                title="下载图标"
+                onClick={() => handleDownload(icon)}>
                 <svg className="icon icon-tool" aria-hidden="true">
                   <use xlinkHref="#icon-unie122" />
                 </svg>
               </div>
-              <div className="icon-tool-container" title="删除图标">
+              <div
+                className="icon-tool-container"
+                title="删除图标"
+                onClick={() => handleDelete(icon)}>
                 <svg className="icon icon-tool" aria-hidden="true">
                   <use xlinkHref="#icon-piliangshanchu" />
                 </svg>
               </div>
-              <div className="icon-tool-container" title="添加至项目">
+              <div
+                className="icon-tool-container"
+                title="添加至项目"
+                onClick={() => handleMove(icon)}>
                 <svg className="icon icon-tool" aria-hidden="true">
                   <use xlinkHref="#icon-yiruwenjianjia" />
                 </svg>
               </div>
-              <div
-                className="icon-copy-container"
-                onClick={() => handleCopyCode(icon)}>
+              <div className="icon-copy-container" onClick={() => copyString(icon)}>
                 <svg className="icon icon-copy" aria-hidden="true">
                   <use xlinkHref="#icon-fuzhi" />
                 </svg>
@@ -88,7 +129,7 @@ const IconShow: React.FC = () => {
         ))
       }
       {
-        ['', '', '', '', '', '', '', '', ''].map((fill, fillIndex) => (
+        Array(10).fill('').map((fill, fillIndex) => (
           <figure className="fill-item" key={fillIndex}>{fill}</figure>
         ))
       }
@@ -96,4 +137,12 @@ const IconShow: React.FC = () => {
   );
 };
 
-export default IconShow;
+export default connect(
+  (state: State) => ({
+    bulkEdit: state.bulkEdit,
+    selectAll: state.selectAll
+  }),
+  {
+    selectAllCreator
+  }
+)(IconShow);
