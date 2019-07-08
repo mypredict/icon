@@ -51,11 +51,11 @@ const IconTool = (props: Props) => {
         </button>
         <button
           className="btn-operation"
-          style={{color: props.bulkEdit ? '#33a5ad' : '#666'}}
+          style={{color: props.bulkEdit ? '#3ebcee' : ''}}
           onClick={() => props.bulkEditCreator(!props.bulkEdit)}>
           <svg
             className="icon icon-operation"
-            style={{color: props.bulkEdit ? '#33a5ad' : '#666'}}
+            style={{color: props.bulkEdit ? '#3ebcee' : ''}}
             aria-hidden="true">
             <use xlinkHref="#icon-piliang-copy" />
           </svg>

@@ -1,10 +1,21 @@
 import { selectAll } from "./redux/reducers/toolsReducer";
 
+export interface CurrentProject {
+  id: string,
+  name: string,
+  type: string,
+  members: Array<string>,
+  icons: Array<string>,
+  link: string
+}
+
 export interface State {
-  projectId: '',
-  projectName: '',
-  bulkEdit: false,
-  selectAll: false
+  teamProjects: Array<string>,
+  personalProjects: Array<string>,
+  bulkEdit: boolean,
+  selectAll: boolean,
+  selectIcons: Array<string>,
+  currentProject: CurrentProject
 }
 
 export interface Navigation {

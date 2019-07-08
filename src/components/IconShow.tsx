@@ -1,55 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { BoolObj, State } from '../interface';
-import { selectAllCreator } from '../redux/actions';
+import { selectAllCreator, selectIconsCreator } from '../redux/actions';
 import { copyString } from '../tools/index';
 import './IconShow.scss';
 
-const iconList = [
-  'icon-delete0', 'icon-delete00', 'icon-delete000', 'icon-delete0000',
-  'icon-delete1', 'icon-delete11', 'icon-delete111', 'icon-delete1111',
-  'icon-delete2', 'icon-delete22', 'icon-delete222', 'icon-delete2222',
-  'icon-delete3', 'icon-delete33', 'icon-delete333', 'icon-delete3333',
-  'icon-delete4', 'icon-delete44', 'icon-delete444', 'icon-delete4444',
-  'icon-delete5', 'icon-delete55', 'icon-delete555', 'icon-delete5555',
-  'icon-delete6', 'icon-delete66', 'icon-delete666', 'icon-delete6666',
-  'icon-delete7', 'icon-delete77', 'icon-delete777', 'icon-delete7777',
-  'icon-delete8', 'icon-delete88', 'icon-delete888', 'icon-delete8888',
-  'icon-delete9', 'icon-delete99', 'icon-delete999', 'icon-delete9999',
-];
-
-function arrToObj(arr: Array<string>): BoolObj {
+function arrToObj(arr: Array<string>, status: boolean = false): BoolObj {
   const obj: BoolObj = {};
   arr.forEach((item) => {
-    obj[item] = false;
+    obj[item] = status;
   });
   return obj;
 }
 
 interface Props {
+  icons: Array<string>,
   bulkEdit: boolean,
   selectAll: boolean,
-  selectAllCreator: Function
+  selectAllCreator: Function,
+  selectIconsCreator: Function
 }
 
 const IconShow = (props: Props) => {
-  const [selectAllIcons, setSelectAllIcons] = useState<BoolObj>(arrToObj(iconList));
+  const [icons, setIcons] = useState<BoolObj>(arrToObj(props.icons));
 
   // 单选
   function handleSelect(selectIcon: string): void {
-    const newSelectAllIcons: BoolObj = { ...selectAllIcons };
-    newSelectAllIcons[selectIcon] = !newSelectAllIcons[selectIcon];
-    setSelectAllIcons(newSelectAllIcons);
+    const newicons: BoolObj = { ...icons };
+    newicons[selectIcon] = !newicons[selectIcon];
+    setIcons(newicons);
   }
 
-  // 全(不)选
-  // useEffect(() => {
-  //   const newSelectAllIcons: BoolObj = { ...selectAllIcons };
-  //   for (let icon in newSelectAllIcons) {
-  //     newSelectAllIcons[icon] = selectAll;
-  //   }
-  //   setSelectAllIcons(newSelectAllIcons);
-  // }, [selectAll]);
+  useEffect(() => {
+    if (props.selectAll) {
+      // setIcons(arrToObj(props.icons, true));
+      props.selectIconsCreator(props.icons);
+    }
+  }, [props.icons, props.selectAll, icons]);
 
   function handleChangeName(icon: string): void {
     console.log(icon, '修改名字');
@@ -70,12 +57,12 @@ const IconShow = (props: Props) => {
   return (
     <div className="icon-show-page">
       {
-        iconList.map((icon, iconIndex) => (
+        props.icons.map((icon, iconIndex) => (
           <figure
             className="icon-item"
             key={iconIndex}
             style={{border: props.bulkEdit
-              ? selectAllIcons[icon] ? '1px solid #e94d0f' : '1px solid #ccc'
+              ? icons[icon] ? '1px solid #e94d0f' : '1px solid #ccc'
               : 'none'
             }}
             onClick={() => props.bulkEdit && handleSelect(icon)}>
@@ -139,10 +126,12 @@ const IconShow = (props: Props) => {
 
 export default connect(
   (state: State) => ({
+    icons: state.currentProject.icons,
     bulkEdit: state.bulkEdit,
     selectAll: state.selectAll
   }),
   {
-    selectAllCreator
+    selectAllCreator,
+    selectIconsCreator
   }
 )(IconShow);
