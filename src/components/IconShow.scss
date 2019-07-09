@@ -13,7 +13,7 @@
     align-items: center;
     position: relative;
     width: 7rem;
-    height: 8.5rem;
+    height: 9rem;
     margin: 0 0.5rem 1rem;
     padding: 0.5rem 0;
     border-radius: 5px;
@@ -60,7 +60,6 @@
         &:hover {
           background: #333;
           border-radius: 5px;
-          color: #e94d0f;
         }
 
         &:hover svg.icon-tool {
@@ -77,35 +76,6 @@
       }
 
       .icon-copy-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 2.5rem;
-        color: #fff;
-        font-size: 0.9rem;
-        transition: background 0.3s, color 0.5s;
-        user-select: none;
-
-        &:hover {
-          color: #3ebcee;
-          background: #333;
-          border-radius: 5px;
-        }
-
-        svg.icon-copy {
-          width: 0.9rem;
-          height: 0.9rem;
-          margin-right: 5px;
-          color: #fff;
-          transition: color 0.5s;
-        }
-
-        &:hover svg.icon-copy {
-          opacity: 1;
-          color: #3ebcee;
-        }
-
         &:after {
           position: absolute;
           content: "复制代码成功";
@@ -126,7 +96,7 @@
         }
       }
 
-      &:hover svg.icon-tool, svg.icon-copy {
+      &:hover svg.icon-tool {
         opacity: 1;
       }
     }

@@ -17,6 +17,7 @@ interface Props {
   icons: Array<string>,
   bulkEdit: boolean,
   selectAll: boolean,
+  selectIcons: Array<string>,
   selectAllCreator: Function,
   selectIconsCreator: Function
 }
@@ -31,12 +32,23 @@ const IconShow = (props: Props) => {
     setIcons(newicons);
   }
 
+  // 全(不)选
   useEffect(() => {
     if (props.selectAll) {
-      // setIcons(arrToObj(props.icons, true));
-      props.selectIconsCreator(props.icons);
+      setIcons(arrToObj(props.icons, true));
+    } else {
+      if (props.selectIcons.length === props.icons.length) {
+        setIcons(arrToObj(props.icons, false));
+      }
     }
-  }, [props.icons, props.selectAll, icons]);
+  }, [props.icons, props.selectAll, props.selectIcons.length]);
+
+  // 处理选中的图标
+  useEffect(() => {
+    const selectIcons = Object.keys(icons).filter(icon => icons[icon]);
+    props.selectIconsCreator(selectIcons);
+    props.selectAllCreator(selectIcons.length === props.icons.length);
+  }, [icons]);
 
   function handleChangeName(icon: string): void {
     console.log(icon, '修改名字');
@@ -46,6 +58,10 @@ const IconShow = (props: Props) => {
     console.log(icon, '下载图标');
   }
 
+  function handleZoom(icon: string): void {
+    console.log(icon, '放大图片');
+  }
+
   function handleDelete(icon: string): void {
     console.log(icon, '删除图标');
   }
@@ -53,6 +69,8 @@ const IconShow = (props: Props) => {
   function handleMove(icon: string): void {
     console.log(icon, '添加至项目')
   }
+
+  console.log(1)
 
   return (
     <div className="icon-show-page">
@@ -91,10 +109,10 @@ const IconShow = (props: Props) => {
               </div>
               <div
                 className="icon-tool-container"
-                title="删除图标"
-                onClick={() => handleDelete(icon)}>
+                title="查看大图"
+                onClick={() => handleZoom(icon)}>
                 <svg className="icon icon-tool" aria-hidden="true">
-                  <use xlinkHref="#icon-piliangshanchu" />
+                  <use xlinkHref="#icon-fangda1" />
                 </svg>
               </div>
               <div
@@ -105,11 +123,21 @@ const IconShow = (props: Props) => {
                   <use xlinkHref="#icon-yiruwenjianjia" />
                 </svg>
               </div>
-              <div className="icon-copy-container" onClick={() => copyString(icon)}>
-                <svg className="icon icon-copy" aria-hidden="true">
+              <div
+                className="icon-tool-container"
+                title="删除图标"
+                onClick={() => handleDelete(icon)}>
+                <svg className="icon icon-tool" aria-hidden="true">
+                  <use xlinkHref="#icon-piliangshanchu" />
+                </svg>
+              </div>
+              <div
+                className="icon-tool-container icon-copy-container"
+                title="复制代码"
+                onClick={() => copyString(icon)}>
+                <svg className="icon icon-tool" aria-hidden="true">
                   <use xlinkHref="#icon-fuzhi" />
                 </svg>
-                复制代码
               </div>
             </div>
           </figure>
@@ -128,7 +156,8 @@ export default connect(
   (state: State) => ({
     icons: state.currentProject.icons,
     bulkEdit: state.bulkEdit,
-    selectAll: state.selectAll
+    selectAll: state.selectAll,
+    selectIcons: state.selectIcons
   }),
   {
     selectAllCreator,
