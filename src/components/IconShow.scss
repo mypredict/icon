@@ -88,7 +88,7 @@
           opacity: 0;
           transition: opacity 1s ease-in 0.5s, top 1s ease-in;
         }
-  
+
         &:active:after {
           top: 100%;
           opacity: 1;

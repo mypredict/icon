@@ -26,3 +26,13 @@ export interface Navigation {
 export declare interface BoolObj {
   [key: string]: boolean
 };
+
+export interface Action {
+  type: string,
+  data?: any
+}
+
+export interface Fetch {
+  url: string,
+  method: 'get' | 'post'
+}

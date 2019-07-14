@@ -1,0 +1,32 @@
+.upload-files-page {
+  position: relative;
+  height: 5rem;
+  border-radius: 10px;
+  background: #eee;
+
+  .tootip {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    color: #555;
+    font-weight: 500;
+
+    svg.icon-upload {
+      width: 1.2rem;
+      height: 1.2rem;
+      margin-right: 0.5rem;
+    }
+  }
+
+  input.add-files-input {
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+  }
+}

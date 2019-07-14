@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 function handleCopy(content: string) {
   const input = document.createElement('input');
   input.value = content;
@@ -9,11 +7,7 @@ function handleCopy(content: string) {
   document.body.removeChild(input);
 }
 
-function useCopy(props: string): Function {
-  useEffect(() => {
-    
-  }, [props]);
-  
+function useCopy(): Function {
   return handleCopy;
 }
 

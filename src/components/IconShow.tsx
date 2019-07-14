@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { BoolObj, State } from '../interface';
+import { BoolObj, State, Action } from '../interface';
 import { selectAllCreator, selectIconsCreator } from '../redux/actions';
-import { copyString } from '../tools/index';
+import { useCopy } from '../custom_hooks/index';
 import './IconShow.scss';
 
 function arrToObj(arr: Array<string>, status: boolean = false): BoolObj {
@@ -23,32 +23,46 @@ interface Props {
 }
 
 const IconShow = (props: Props) => {
-  const [icons, setIcons] = useState<BoolObj>(arrToObj(props.icons));
+  const copyCode = useCopy();
+  function reducer(state: BoolObj, action: Action): BoolObj {
+    let newIcons = { ...state };
+    let newSelectIcons = [];
+    switch(action.type) {
+      case 'selectSingle':
+        newIcons[action.data] = !newIcons[action.data];
+        newSelectIcons = Object.keys(newIcons).filter(icon => newIcons[icon]);
+        props.selectIconsCreator(newSelectIcons);
+        props.selectAllCreator(newSelectIcons.length === props.icons.length);
+        return newIcons;
+      case 'selectAll':
+        if (props.selectAll) {
+          newIcons = arrToObj(props.icons, true);
+        } else {
+          if (props.selectIcons.length === 0 || props.selectIcons.length === props.icons.length) {
+            newIcons = arrToObj(props.icons, false);
+          }
+        }
+        newSelectIcons = Object.keys(newIcons).filter(icon => newIcons[icon]);
+        props.selectIconsCreator(newSelectIcons);
+        return newIcons;
+      default:
+        return state;
+    }
+  }
+  const [icons, dispatch] = useReducer(reducer, arrToObj(props.icons));
 
   // 单选
   function handleSelect(selectIcon: string): void {
-    const newicons: BoolObj = { ...icons };
-    newicons[selectIcon] = !newicons[selectIcon];
-    setIcons(newicons);
+    dispatch({
+      type: "selectSingle",
+      data: selectIcon
+    });
   }
 
   // 全(不)选
   useEffect(() => {
-    if (props.selectAll) {
-      setIcons(arrToObj(props.icons, true));
-    } else {
-      if (props.selectIcons.length === props.icons.length) {
-        setIcons(arrToObj(props.icons, false));
-      }
-    }
-  }, [props.icons, props.selectAll, props.selectIcons.length]);
-
-  // 处理选中的图标
-  useEffect(() => {
-    const selectIcons = Object.keys(icons).filter(icon => icons[icon]);
-    props.selectIconsCreator(selectIcons);
-    props.selectAllCreator(selectIcons.length === props.icons.length);
-  }, [icons]);
+    dispatch({ type: "selectAll" });
+  }, [props.selectAll]);
 
   function handleChangeName(icon: string): void {
     console.log(icon, '修改名字');
@@ -66,7 +80,7 @@ const IconShow = (props: Props) => {
     console.log(icon, '删除图标');
   }
 
-  function handleMove(icon: string): void {
+  function handleAddTo(icon: string): void {
     console.log(icon, '添加至项目')
   }
 
@@ -118,7 +132,7 @@ const IconShow = (props: Props) => {
               <div
                 className="icon-tool-container"
                 title="添加至项目"
-                onClick={() => handleMove(icon)}>
+                onClick={() => handleAddTo(icon)}>
                 <svg className="icon icon-tool" aria-hidden="true">
                   <use xlinkHref="#icon-yiruwenjianjia" />
                 </svg>
@@ -134,7 +148,7 @@ const IconShow = (props: Props) => {
               <div
                 className="icon-tool-container icon-copy-container"
                 title="复制代码"
-                onClick={() => copyString(icon)}>
+                onClick={() => copyCode(icon)}>
                 <svg className="icon icon-tool" aria-hidden="true">
                   <use xlinkHref="#icon-fuzhi" />
                 </svg>

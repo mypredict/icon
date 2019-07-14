@@ -1,0 +1,45 @@
+.dialog-mask {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+}
+
+.dialog-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30rem;
+  height: 15rem;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  box-sizing: border-box;
+  background: #fff;
+
+  header.icon-close-container {
+    padding: 0.5rem 0.5rem 0 0;
+    text-align: right;
+  }
+
+  .content-container {
+    flex: 1;
+    padding: 0 1rem 1rem;
+
+    h3 {
+      margin: 0;
+      font-weight: 500;
+    }
+  }
+
+  footer.btn-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 1rem 1rem 0;
+  }
+}
