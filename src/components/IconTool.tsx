@@ -7,6 +7,7 @@ import Dialog from './basic_components/dialog/Dialog';
 import Tooltip from './basic_components/tooltip/Tooltip';
 import CreateProject from './CreateProject';
 import UploadIcons from './UploadIcons';
+import AddTo from './AddTo';
 import './IconTool.scss';
 
 interface DialogsDisplay {
@@ -22,7 +23,7 @@ const dialogsDisplay = {
   createProject: false,
   uploadIcons: false,
   deleteProject: false,
-  addToProject: false,
+  addToProject: true,
   deleteIcons: false,
   tooltipDisplay: false
 };
@@ -80,6 +81,10 @@ const IconTool = (props: Props) => {
       <UploadIcons
         display={dialogs.uploadIcons}
         callback={() => dispatch({ type: 'uploadIcons' })}
+      />
+      <AddTo
+        display={dialogs.addToProject}
+        callback={() => dispatch({ type: 'addToProject' })}
       />
       <Dialog
         display={false}
@@ -142,7 +147,11 @@ const IconTool = (props: Props) => {
             props.bulkEdit ? "下载图标" : "下载项目"
           }
         </button>
-        <button className="btn-operation" style={{display: props.bulkEdit ? "block" : "none"}}>
+        <button
+          className="btn-operation"
+          style={{display: props.bulkEdit ? "block" : "none"}}
+          onClick={() => dispatch({ type: 'addToProject' })}
+        >
           <svg className="icon icon-operation" aria-hidden="true">
             <use xlinkHref="#icon-yiruwenjianjia" />
           </svg>

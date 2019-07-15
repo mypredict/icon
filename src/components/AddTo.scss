@@ -1,0 +1,86 @@
+.add-to-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30rem;
+  max-width: 100vw;
+  height: 35rem;
+  max-height: 100vh;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  box-sizing: border-box;
+  background: #fff;
+
+  header.icon-close-container {
+    padding: 0.5rem 0.5rem 0 0;
+    text-align: right;
+  }
+
+  .content-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    padding: 0 2rem 1rem;
+
+    h3 {
+      margin: 0 0 1rem 0;
+      font-weight: 400;
+    }
+
+    .project-list {
+      display: flex;
+      height: 100%;
+    }
+
+    ul.personal, ul.team {
+      flex: 1;
+      height: 100%;
+      margin: 0;
+      padding: 1rem;
+      background: #eee;
+      border-radius: 10px;
+      overflow-y: auto;
+      list-style: none;
+      box-sizing: border-box;
+
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
+    }
+
+    ul.personal {
+      margin-right: 1rem;
+    }
+
+    li.item {
+      display: flex;
+      align-items: center;
+      height: 2rem;
+    }
+
+    li.item-head {
+      height: 2.5rem;
+      font-weight: 600;
+    }
+
+    input.checkbox {
+      margin-right: 10px;
+    }
+
+    span.item-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+  
+  footer.btn-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 2rem 1.5rem 0;
+  }
+}

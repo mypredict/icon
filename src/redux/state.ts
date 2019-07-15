@@ -1,6 +1,10 @@
 export default {
-  teamProjects: [],
-  personalProjects: [],
+  teamProjects: [
+    '团队项目1', '团队项目2', '团队项目3', '团队项目4'
+  ],
+  personalProjects: [
+    '个人项目1', '个人项目2', '个人项目3', '个人项目4'
+  ],
   bulkEdit: false,
   selectAll: false,
   selectIcons: [],
