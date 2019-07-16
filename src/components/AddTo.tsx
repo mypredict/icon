@@ -61,7 +61,6 @@ const AddTo = (props: Props) => {
 
   function addToCallback(): void {
     console.log(personalSelects, teamSelects);
-    alert('添加成功');
   }
 
   return (
@@ -139,6 +138,7 @@ const AddTo = (props: Props) => {
             btnStyle={{marginRight: '1rem'}}
           />
           <Button
+            disabled={!(personalSelects.length > 0 || teamSelects.length > 0)}
             name="确定"
             callback={addToCallback}
           />

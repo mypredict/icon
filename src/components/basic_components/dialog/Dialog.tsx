@@ -9,15 +9,6 @@ interface Props {
 }
 
 const Dialog = (props: Props) => {
-
-  function closeCallback() {
-    console.log('ok');
-  }
-
-  function sureCallback() {
-    console.log('ok');
-  }
-
   return (
     <div
       className="dialog-mask"
@@ -30,7 +21,7 @@ const Dialog = (props: Props) => {
             btnStyle={{padding: "10px", borderRadius: "50%"}}
             btnBackground={"#fff"}
             iconStyle={{width: "1rem", height: "1rem"}}
-            callback={closeCallback}
+            callback={() => props.callback(true)}
           />
         </header>
         <div className="content-container">
@@ -38,8 +29,8 @@ const Dialog = (props: Props) => {
           <input type="text"/>
         </div>
         <footer className="btn-container">
-          <Button name={"取消"} callback={closeCallback} btnStyle={{marginRight: '1rem'}} />
-          <Button name={"确定"} callback={sureCallback} />
+          <Button name={"取消"} callback={() => props.callback(true)} btnStyle={{marginRight: '1rem'}} />
+          <Button name={"确定"} callback={() => props.callback(false)} />
         </footer>
       </div>
     </div>

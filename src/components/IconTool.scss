@@ -12,7 +12,7 @@
     cursor: pointer;
 
     &:hover, &:hover svg.icon-operation {
-      color: #777;
+      color: #999;
     }
   }
 
@@ -29,11 +29,11 @@
       background: #fff;
 
       &:hover {
-        color: #777;
+        color: #999;
       }
     }
 
-    svg.icon-button {
+    svg.icon-create {
       width: 1rem;
       height: 1rem;
       margin-right: 5px;
@@ -66,7 +66,7 @@
         top: calc(100% + 0.5rem);
         transform: translateX(-50%);
         font-size: 0.8rem;
-        color: #3ebcee;
+        color: #159ed4;
         white-space: nowrap;
         opacity: 0;
         transition: opacity 1s ease-in 0.5s, top 1s ease-in;
@@ -76,6 +76,19 @@
         top: 100%;
         opacity: 1;
         transition: all 0s;
+      }
+    }
+
+    button.btn-disabled, svg.btn-disabled {
+      color: #999;
+      cursor: auto;
+    }
+  
+    button.btn-bulk-edit, svg.btn-bulk-edit {
+      color: #159ed4;
+  
+      &:hover, &:hover svg.btn-bulk-edit {
+        color: #52c3f0;
       }
     }
   }

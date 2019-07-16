@@ -19,6 +19,7 @@
     border-radius: 5px;
     box-sizing: border-box;
     cursor: pointer;
+    user-select: none;
 
     svg.icon-self {
       width: 3rem;
@@ -83,7 +84,7 @@
           top: calc(100% + 0.5rem);
           transform: translateX(-50%);
           font-size: 0.8rem;
-          color: #3ebcee;
+          color: #159ed4;
           white-space: nowrap;
           opacity: 0;
           transition: opacity 1s ease-in 0.5s, top 1s ease-in;
