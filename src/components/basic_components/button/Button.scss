@@ -10,6 +10,7 @@ button.btn-root {
   cursor: pointer;
   user-select: none;
   overflow: hidden;
+  transition: all 0.3s;
 
   &:after, &:before {
     content: '';

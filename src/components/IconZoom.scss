@@ -1,0 +1,23 @@
+.icon-zoom-dialog-mask {
+  cursor: pointer;
+}
+
+.icon-zoom-page {
+  position: fixed;
+  min-width: 50vw;
+  min-height: 50vh;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 2rem;
+  border-radius: 10px;
+  background: #fff;
+  box-sizing: border-box;
+
+  .icon-zoom {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

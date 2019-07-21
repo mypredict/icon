@@ -2,6 +2,7 @@ import React from 'react';
 import './Button.scss';
 
 interface Props {
+  disabledKeyDown?: boolean,
   disabled?: boolean,
   name?: string,
   btnStyle?: object,
@@ -23,6 +24,7 @@ const Button = (props: Props) => {
       }}
       className={`btn-root ${props.disabled ? "btn-disabled" : ""}` }
       onClick={() => !props.disabled && props.callback()}
+      onKeyDown={(e) => props.disabledKeyDown && e.preventDefault()}
     >
       <svg
         style={{
@@ -41,6 +43,7 @@ const Button = (props: Props) => {
 };
 
 Button.defaultProps = {
+  disabledKeyDown: true,
   disabled: false,
   name: '',
   btnStyle: {},

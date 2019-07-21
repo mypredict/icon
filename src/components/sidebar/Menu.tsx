@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import { Navigation } from '../../interface';
 import './Menu.scss';
 
@@ -39,9 +40,11 @@ const Menu: React.FC = () => {
             </button>
             {
               chapter.secondaryNavigation.map((item, itemIndex) => (
-                <div className="chapter-item" key={itemIndex}>
-                  {item}
-                </div>
+                <NavLink to={`/icon/${item}`} className="project-menu"  key={itemIndex}>
+                  <div className="chapter-item">
+                    {item}
+                  </div>
+                </NavLink>
               ))
             }
           </div>

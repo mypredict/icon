@@ -36,4 +36,20 @@ header.head-container {
   img {
     width: 100%;
   }
+
+  a.login-img {
+    display: flex;
+    height: 100%;
+  }
+
+  svg.icon-login {
+    width: 100%;
+    height: 100%;
+    color: #999;
+  }
+
+  a.login-button {
+    color: #159ed4;
+    text-decoration: none;
+  }
 }

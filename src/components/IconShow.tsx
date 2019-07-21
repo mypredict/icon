@@ -1,8 +1,11 @@
 import React, { useReducer, useEffect } from 'react';
+import { useCopy } from '../custom_hooks/index';
 import { connect } from 'react-redux';
 import { BoolObj, State, Action } from '../interface';
 import { selectAllCreator, selectIconsCreator } from '../redux/actions';
-import { useCopy } from '../custom_hooks/index';
+import Dialog from './basic_components/dialog/Dialog';
+import IconZoom from './IconZoom';
+import AddTo from './AddTo';
 import './IconShow.scss';
 
 function arrToObj(arr: Array<string>, status: boolean = false): BoolObj {
@@ -12,6 +15,24 @@ function arrToObj(arr: Array<string>, status: boolean = false): BoolObj {
   });
   return obj;
 }
+
+interface DialogsDisplay {
+  editName: boolean,
+  iconZoom: boolean,
+  addToProject: boolean,
+  deleteIcons: boolean,
+  tooltipDisplay: boolean,
+  iconName: string
+}
+
+const dialogsDisplay = {
+  editName: false,
+  iconZoom: false,
+  addToProject: false,
+  deleteIcons: false,
+  tooltipDisplay: false,
+  iconName: ''
+};
 
 interface Props {
   icons: Array<string>,
@@ -24,7 +45,8 @@ interface Props {
 
 const IconShow = (props: Props) => {
   const copyCode = useCopy();
-  function reducer(state: BoolObj, action: Action): BoolObj {
+
+  function selectReducer(state: BoolObj, action: Action): BoolObj {
     let newIcons = { ...state };
     let newSelectIcons = [];
     switch(action.type) {
@@ -49,23 +71,42 @@ const IconShow = (props: Props) => {
         return state;
     }
   }
-  const [icons, dispatch] = useReducer(reducer, arrToObj(props.icons));
+  const [icons, selectDispatch] = useReducer(selectReducer, arrToObj(props.icons));
 
-  // 单选
-  function handleSelect(selectIcon: string): void {
-    dispatch({
-      type: "selectSingle",
-      data: selectIcon
-    });
+  function dialogsReducer(state: DialogsDisplay, action: Action): DialogsDisplay {
+    switch (action.type) {
+      case 'editName':
+        return { ...state, editName: !state.editName };
+      case 'iconZoom':
+        return { ...state, iconZoom: !state.iconZoom };
+      case 'addToProject':
+        return { ...state, addToProject: !state.addToProject };
+      case 'deleteIcons':
+        return { ...state, deleteIcons: !state.deleteIcons };
+      case 'iconName':
+        return { ...state, iconName: action.data };
+      default:
+        return state;
+    }
   }
+  const [dialogs, dialogsDispatch] = useReducer(dialogsReducer, dialogsDisplay);
 
   // 全(不)选
   useEffect(() => {
-    dispatch({ type: "selectAll" });
+    selectDispatch({ type: "selectAll" });
   }, [props.selectAll]);
 
-  function handleChangeName(icon: string): void {
-    console.log(icon, '修改名字');
+  function handleEditName(icon: string): void {
+    dialogsDispatch({ type: 'editName' });
+    dialogsDispatch({ type: 'iconName', data: icon });
+  }
+
+  function editNameCallback(sure: boolean, newName: string) {
+    if (sure) {
+      console.log(newName);
+    } else {
+      dialogsDispatch({ type: 'editName' });
+    }
   }
 
   function handleDownload(icon: string): void {
@@ -73,21 +114,53 @@ const IconShow = (props: Props) => {
   }
 
   function handleZoom(icon: string): void {
-    console.log(icon, '放大图片');
-  }
-
-  function handleDelete(icon: string): void {
-    console.log(icon, '删除图标');
+    dialogsDispatch({ type: 'iconZoom' });
+    dialogsDispatch({ type: 'iconName', data: icon });
   }
 
   function handleAddTo(icon: string): void {
-    console.log(icon, '添加至项目')
+    dialogsDispatch({ type: 'addToProject' });
+    dialogsDispatch({ type: 'iconName', data: icon });
   }
 
-  console.log(1)
+  function handleDelete(icon: string): void {
+    dialogsDispatch({ type: 'deleteIcons' });
+    dialogsDispatch({ type: 'iconName', data: icon });
+  }
+
+  function deleteIconsCallback(close: boolean): void {
+    if (close) {
+      dialogsDispatch({ type: 'deleteIcons' });
+    } else {
+      dialogsDispatch({ type: 'deleteIcons' });
+    }
+  }
 
   return (
     <div className="icon-show-page">
+      <Dialog
+        display={dialogs.editName}
+        title="修改图标名称"
+        input={true}
+        inputPlaceholder="图标名称"
+        maxLength={20}
+        callback={editNameCallback}
+      />
+      <IconZoom
+        display={dialogs.iconZoom}
+        iconType="svg"
+        iconName={dialogs.iconName}
+        callback={() => dialogsDispatch({ type: 'iconZoom' })}
+      />
+      <AddTo
+        display={dialogs.addToProject}
+        callback={() => dialogsDispatch({ type: 'addToProject' })}
+      />
+      <Dialog
+        display={dialogs.deleteIcons}
+        title={"确定删除选中图标?"}
+        callback={deleteIconsCallback}
+      />
       {
         props.icons.map((icon, iconIndex) => (
           <figure
@@ -97,7 +170,7 @@ const IconShow = (props: Props) => {
               ? icons[icon] ? '1px solid #e94d0f' : '1px solid #ccc'
               : 'none'
             }}
-            onClick={() => props.bulkEdit && handleSelect(icon)}>
+            onClick={() => props.bulkEdit && selectDispatch({ type: "selectSingle", data: icon })}>
             <svg className="icon icon-self" aria-hidden="true">
               <use xlinkHref="#icon-yiruwenjianjia" />
             </svg>
@@ -108,7 +181,7 @@ const IconShow = (props: Props) => {
               <div
                 className="icon-tool-container"
                 title="修改代码名称"
-                onClick={() => handleChangeName(icon)}>
+                onClick={() => handleEditName(icon)}>
                 <svg className="icon icon-tool" aria-hidden="true">
                   <use xlinkHref="#icon-grammar" />
                 </svg>

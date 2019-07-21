@@ -11,8 +11,8 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
     <Switch>
-      <Route path="/home" component={App} />
-      <Redirect to="/home" />
+      <Route path="/" component={App} />
+      <Redirect to="/" />
     </Switch>
   </BrowserRouter>
   </Provider>,

@@ -28,4 +28,15 @@ nav.menu-container {
     font-size: 0.9rem;
     white-space: nowrap;
   }
+
+  a.project-menu {
+    color: #555;
+    text-decoration: none;
+  }
+
+  a.active {
+    .chapter-item {
+      color: #159ed4;
+    }
+  }
 }
