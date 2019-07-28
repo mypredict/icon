@@ -1,10 +1,9 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useCallback } from 'react';
 import { useCopy } from '../custom_hooks/index';
 import { connect } from 'react-redux';
 import { State, Action } from '../interface';
-import { bulkEditCreator, selectAllCreator } from '../redux/actions';
+import { bulkEditCreator, selectAllCreator, tooltipConfigCreator } from '../redux/actions';
 import Dialog from './basic_components/dialog/Dialog';
-import Tooltip from './basic_components/tooltip/Tooltip';
 import CreateProject from './CreateProject';
 import UploadIcons from './UploadIcons';
 import AddTo from './AddTo';
@@ -29,11 +28,16 @@ const dialogsDisplay = {
 };
 
 interface Props {
+  history: any,
+  userId: string,
   bulkEdit: boolean,
-  bulkEditCreator: Function,
+  selectIcons: Array<string>,
   selectAll: boolean,
+  iconsNum: number,
+  link: string,
+  bulkEditCreator: Function,
   selectAllCreator: Function,
-  selectIcons: Array<string>
+  tooltipConfigCreator: Function
 }
 
 const IconTool = (props: Props) => {
@@ -91,11 +95,28 @@ const IconTool = (props: Props) => {
     }
   }
 
+  function createProject() {
+    if (props.userId) {
+      dispatch({ type: 'createProject' });
+    } else {
+      props.tooltipConfigCreator({
+        tooltip: '请先登录'
+      })
+    }
+  }
+
+  const createProjectCallback = useCallback(() => {
+    dispatch({ type: 'createProject' });
+  }, []);
+
+  console.log(123)
+
   return (
     <div className="icon-tool">
       <CreateProject
+        history={props.history}
         display={dialogs.createProject}
-        callback={() => dispatch({ type: 'createProject' })}
+        callback={createProjectCallback}
       />
       <UploadIcons
         display={dialogs.uploadIcons}
@@ -115,14 +136,10 @@ const IconTool = (props: Props) => {
         title={"确定删除选中图标?"}
         callback={deleteIconsCallback}
       />
-      <Tooltip
-        display={dialogs.tooltipDisplay}
-        title={"chenggongle"}
-      />
       <div className="project-create">
         <button
           className="btn-operation btn-create"
-          onClick={() => dispatch({ type: 'createProject' })}
+          onClick={createProject}
         >
           <svg className="icon icon-create" aria-hidden="true">
             <use xlinkHref="#icon-add-author" />
@@ -133,8 +150,8 @@ const IconTool = (props: Props) => {
       <div
         className="project-information"
         style={{display: true ? 'flex' : 'none'}}>
-        <span className="icon-count">共24个图标</span>
-        <button className="btn-operation btn-copy" onClick={() => copyLink('123')}>
+        <span className="icon-count">共{props.iconsNum}个图标</span>
+        <button className="btn-operation btn-copy" onClick={() => copyLink(props.link)}>
           <svg className="icon icon-operation" aria-hidden="true">
             <use xlinkHref="#icon-fuzhi" />
           </svg>
@@ -216,12 +233,16 @@ const IconTool = (props: Props) => {
 
 export default connect(
   (state: State) => ({
+    userId: state.userMessage.userId,
     bulkEdit: state.bulkEdit,
     selectAll: state.selectAll,
-    selectIcons: state.selectIcons
+    selectIcons: state.selectIcons,
+    iconsNum: state.currentProject.icons.length,
+    link: state.currentProject.link
   }),
   {
     bulkEditCreator,
-    selectAllCreator
+    selectAllCreator,
+    tooltipConfigCreator
   }
 )(IconTool);

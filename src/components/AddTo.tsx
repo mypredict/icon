@@ -151,6 +151,6 @@ const AddTo = (props: Props) => {
 export default connect(
   (state: State) => ({
     teamProjects: state.teamProjects,
-    personalProjects: state.personalProjects
+    personalProjects: state.userMessage.personalProjects
   })
 )(AddTo);

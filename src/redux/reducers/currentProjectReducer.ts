@@ -17,8 +17,8 @@ interface CurrentProjectAction {
 };
 
 export function currentProject(
-    state: CurrentProject = states.currentProject,
-    action: CurrentProjectAction): CurrentProject {
+  state: CurrentProject = states.currentProject,
+  action: CurrentProjectAction): CurrentProject {
   switch (action.type) {
     case CURRENT_PROJECT:
       return { ...state, ...action.data };

@@ -3,10 +3,11 @@ import {
   SELECT_ALL,
   SELECT_ICONS,
   TEAM_PROJECTS,
-  PERSONAL_PROJECTS,
-  CURRENT_PROJECT
+  CURRENT_PROJECT,
+  USER_MESSAGE,
+  TOOLTIP
 } from './actionTypes';
-import { CurrentProject } from '../interface';
+import { CurrentProject, UserMessage } from '../interface';
 
 // 批量编辑状态控制
 export const bulkEditCreator: Function = (status: boolean): object => ({
@@ -32,14 +33,28 @@ export const teamProjectsCreator: Function = (teamProjects: Array<string>): obje
   data: teamProjects
 });
 
-// 所有个人项目
-export const personalProjectsCreator: Function = (personalProjects: Array<string>): object => ({
-  type: PERSONAL_PROJECTS,
-  data: personalProjects
-});
-
 // 当前项目
 export const currentProjectCreator: Function = (currentProject: CurrentProject): object => ({
   type: CURRENT_PROJECT,
   data: currentProject
+});
+
+// 个人信息
+export const userMessageCreator: Function = (userMessage: UserMessage): object => ({
+  type: USER_MESSAGE,
+  data: userMessage
+});
+
+interface IsTooltipConfig {
+  tooltip: string,
+  rootStyle?: object,
+  icon?: string,
+  iconStyle?: object,
+  delay?: number
+}
+
+// 提示框
+export const tooltipConfigCreator: Function = (tooltipConfig: IsTooltipConfig): object => ({
+  type: TOOLTIP,
+  data: tooltipConfig
 });

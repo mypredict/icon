@@ -7,12 +7,13 @@ interface Props {
   style?: object,
   placeholder?: string,
   maxLength?: number,
+  defaultValue?: string,
   filter: Function,
   callback: Function
 }
 
 const Input = (props: Props) => {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(props.defaultValue);
 
   function handleInput(input: string): void {
     const filterValue = props.filter(input);
@@ -36,6 +37,7 @@ const Input = (props: Props) => {
 };
 
 Input.defaultProps = {
+  defaultValue: '',
   type: 'text',
   filter: (value: string) => value.trim()
 };

@@ -51,7 +51,8 @@ Button.defaultProps = {
   btnBackground: '',
   icon: '',
   iconStyle: {},
-  iconColor: ''
+  iconColor: '',
+  callback: () => {}
 };
 
 export default Button;

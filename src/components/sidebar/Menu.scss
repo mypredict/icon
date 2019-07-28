@@ -6,7 +6,6 @@ nav.menu-container {
 
   .chapter {
     width: calc(100% - 4rem);
-    margin-top: 1rem;
     overflow: hidden;
     transition: height 1s;
   }
@@ -23,8 +22,7 @@ nav.menu-container {
   }
 
   .chapter-item {
-    margin-top: 1rem;
-    padding-left: 2rem;
+    padding: 0.5rem 0 0.5rem 2rem;
     font-size: 0.9rem;
     white-space: nowrap;
   }

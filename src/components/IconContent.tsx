@@ -3,10 +3,14 @@ import IconTool from './IconTool';
 import IconShow from './IconShow';
 import './IconContent.scss';
 
-const IconContent: React.FC = () => {
+interface Props {
+  history: any
+}
+
+const IconContent = (props: Props) => {
   return (
     <div className="icon-page">
-      <IconTool />
+      <IconTool history={props.history} />
       <IconShow />
     </div>
   );

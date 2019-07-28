@@ -36,21 +36,6 @@
       margin-right: 1rem;
     }
 
-    input.name {
-      width: 12rem;
-      height: 2rem;
-      padding: 0.5rem;
-      font-size: 1rem;
-      outline: none;
-      border: none;
-      border-bottom: 1px solid #aaa;
-      box-sizing: border-box;
-
-      &:focus {
-        border-bottom: 1px solid #bce3ec;
-      }
-    }
-
     input.input-radio {
       position: relative;
       margin: 0;

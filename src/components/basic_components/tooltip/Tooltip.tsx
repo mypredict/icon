@@ -1,19 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { State } from '../../../interface';
+import { tooltipConfigCreator } from '../../../redux/actions';
 import './Tooltip.scss';
 
 interface Props {
-  display: boolean,
-  title: string,
-  rootStyle?: Object,
-  icon?: string,
-  iconStyle?: Object
+  tooltip: string,
+  rootStyle: Object,
+  icon: string,
+  iconStyle: Object,
+  delay: number,
+  tooltipConfigCreator: Function
 }
 
 const Tooltip = (props: Props) => {
+  const { tooltip, delay, tooltipConfigCreator } = props;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      tooltipConfigCreator({
+        tooltip: '',
+        icon: ''
+      });
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [tooltip, delay, tooltipConfigCreator]);
+
   return (
     <div
       className="tooltip-page"
-      style={{...props.rootStyle, display: props.display ? "block" : "none"}}
+      style={{...props.rootStyle, display: props.tooltip ? "block" : "none"}}
     >
       <svg
         className="icon icon-tooltip"
@@ -22,9 +37,20 @@ const Tooltip = (props: Props) => {
       >
         <use xlinkHref={props.icon} />
       </svg>
-      {props.title}
+      {props.tooltip}
     </div>
   );
 };
 
-export default Tooltip;
+export default connect(
+  (state: State) => ({
+    tooltip: state.tooltipConfig.tooltip,
+    rootStyle: state.tooltipConfig.rootStyle,
+    icon: state.tooltipConfig.icon,
+    iconStyle: state.tooltipConfig.iconStyle,
+    delay: state.tooltipConfig.delay
+  }),
+  {
+    tooltipConfigCreator
+  }
+)(Tooltip);

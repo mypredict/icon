@@ -1,0 +1,64 @@
+.loading-container {
+  position: relative;
+  width: 50px;
+  z-index: 100;
+
+  div {
+    position: absolute;
+    width: 25%;
+    padding-top: 25%;
+    background: #bbb;
+    border-radius: 50%;
+
+    &:nth-child(1) {
+      left: 0;
+      transform-origin: 50% -100%;
+      animation: circle1 1s infinite ease-out;
+    }
+
+    @keyframes circle1 {
+      0% {
+        transform: rotate(0deg);
+      }
+      25% {
+        transform: rotate(60deg);
+      }
+      50% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(0deg);
+      }
+    }
+
+    &:nth-child(2) {
+      left: 25%;
+    }
+
+    &:nth-child(3) {
+      left: 50%;
+    }
+
+    &:nth-child(4) {
+      right: 0;
+      transform-origin: 50% -100%;
+      animation: circle4 1s infinite ease-out;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes circle4 {
+      0% {
+        transform: rotate(0deg);
+      }
+      25% {
+        transform: rotate(-60deg);
+      }
+      50% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(0deg);
+      }
+    }
+  }
+}

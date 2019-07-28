@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
-import { Response } from '../interface';
+import { useEffect } from 'react';
 
 type Method = 'GET' | 'POST';
 
-function useFetch(url: string, method: Method = 'GET', postData?: object | null): Response {
-  const [response, setResponse]: [Response, Function] = useState({ state: 'error', result: 'unFetch' });
+function useFetch2(
+  callback: Function,
+  url: string,
+  method: Method = 'GET',
+  postData?: object | null) {
   
   useEffect(() => {
     if (url && method === 'GET') {
@@ -14,10 +16,10 @@ function useFetch(url: string, method: Method = 'GET', postData?: object | null)
       })
         .then(response => response.json())
         .then((data: Response) => {
-          setResponse(data);
+          callback(data);
         })
         .catch(error => {
-          setResponse({ state: 'error', result: error });
+          callback({ state: 'error', result: error });
         });
     }
     if (url && method === 'POST' && postData) {
@@ -31,15 +33,13 @@ function useFetch(url: string, method: Method = 'GET', postData?: object | null)
       })
         .then(response => response.json())
         .then((data: Response) => {
-          setResponse(data);
+          callback(data);
         })
         .catch(error => {
-          setResponse({ state: 'error', result: error });
+          callback({ state: 'error', result: error });
         })
     }
-  }, [url, method, postData]);
-
-  return response;
+  }, [callback, url, method, postData]);
 }
 
-export default useFetch;
+export default useFetch2;

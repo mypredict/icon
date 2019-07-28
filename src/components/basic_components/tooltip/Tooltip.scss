@@ -6,8 +6,11 @@
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
+  border: 1px solid #e7e6b1;
   background: #fff;
+  box-shadow: 0 0 5px 5px #eee;
   border-radius: 5px;
+  z-index: 1000;
 
   svg.icon-tooltip {
     width: 1rem;

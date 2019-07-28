@@ -1,36 +1,77 @@
-import React, { useState } from 'react';
-import { useMessage } from '../custom_hooks/index';
+import React, { useState, useCallback } from 'react';
+import { useFetch3, useKeyDown } from '../custom_hooks/index';
+import { connect } from 'react-redux';
+import { State, Response } from '../interface';
+import { tooltipConfigCreator } from '../redux/actions';
 import Button from './basic_components/button/Button';
-import Tooltip from './basic_components/tooltip/Tooltip';
+import Input from './basic_components/input/Input';
 import './CreateProject.scss';
 
 interface Props {
+  history: any,
   display: boolean,
-  callback: Function
+  callback: Function,
+  tooltipConfigCreator: Function
 }
 
 const CreateProject = (props: Props) => {
+  const { history, callback, tooltipConfigCreator } = props;
   const [name, setName] = useState('');
-  const [type, setType] = useState('svg');
+  const [iconType, setIconType] = useState('svg');
   const [attribution, setAttribution] = useState('personal');
-  const message = useMessage();
 
-  function sureCallback() {
-    if (name.trim()) {
-      message.tooltip('123')
-    }
+  useKeyDown(() => {
+    name && handleRequest();
+  }, 13);
+
+  const requestCreateProject = useFetch3();
+  function handleRequest() {
+    requestCreateProject.post('/create', {
+      name,
+      iconType,
+      type: attribution
+    }, (data: Response) => {
+      createCallback(data);
+    });
   }
+  const createCallback = useCallback((createResponse: Response) => {
+    if (createResponse.state === 'success') {
+      tooltipConfigCreator({
+        tooltip: '新项目创建成功',
+        icon: '#icon-wancheng1',
+        rootStyle: { boxShadow: 'none' }
+      });
+      history.push(`/icon/${name}`);
+      callback();
+      return;
+    }
+    if (createResponse.result === 'not login') {
+      tooltipConfigCreator({ tooltip: '当前不在线, 请先登录', icon: '#icon-shibai-' });
+      callback();
+      history.push('/login');
+      return;
+    }
+    if (createResponse.result === 'repeat') {
+      tooltipConfigCreator({
+        tooltip: '项目名称已存在',
+        icon: '#icon-shibai-',
+        rootStyle: { boxShadow: 'none' }
+      });
+    }
+    if (createResponse.result === 'server is error') {
+      tooltipConfigCreator({
+        tooltip: '服务器错误',
+        icon: '#icon-shibai-',
+        rootStyle: { boxShadow: 'none' }
+      });
+    }
+  }, [name, callback, history, tooltipConfigCreator]);
 
   return (
     <div
       className="dialog-mask"
       style={{display: props.display ? "block" : "none"}}
     >
-      <Tooltip
-        display={true}
-        title={"正在创建项目"}
-        icon={"#icon-wancheng1"}
-      />
       <div className="create-project-dialog">
         <header className="icon-close-container">
           <Button
@@ -45,32 +86,29 @@ const CreateProject = (props: Props) => {
           <h3>新建项目:</h3>
           <div className="select-container">
             <label className="label">项目名称:</label>
-            <input
-              className="name"
-              name="name"
-              type="text"
-              maxLength={10}
-              value={name}
-              onChange={(event) => setName(event.target.value)}
+            <Input
+              style={{width: "12rem"}}
+              maxLength={15}
+              callback={(value: string) => setName(value)}
             />
           </div>
           <div className="select-container">
             <label className="label">项目类型:</label>
             <input
               className="input-radio svg"
-              name="type"
+              name="iconType"
               type="radio"
               value="svg"
-              checked={type === "svg"}
-              onChange={(event) => setType(event.target.value)}
+              checked={iconType === "svg"}
+              onChange={(event) => setIconType(event.target.value)}
             />
             <input
               className="input-radio img"
-              name="type"
+              name="iconType"
               type="radio"
               value="img"
-              checked={type === "img"}
-              onChange={(event) => setType(event.target.value)}
+              checked={iconType === "img"}
+              onChange={(event) => setIconType(event.target.value)}
             />
           </div>
           <div className="select-container">
@@ -94,12 +132,27 @@ const CreateProject = (props: Props) => {
           </div>
         </div>
         <footer className="btn-container">
-          <Button name={"取消"} callback={() => props.callback()} btnStyle={{marginRight: '1rem'}} />
-          <Button name={"确定"} callback={sureCallback} />
+          <Button
+            name={"取消"}
+            callback={() => props.callback()}
+            btnStyle={{marginRight: '1rem'}}
+          />
+          <Button
+            disabled={name ? false : true}
+            name={"确定"}
+            callback={handleRequest}
+          />
         </footer>
       </div>
     </div>
   );
 };
 
-export default CreateProject;
+export default connect(
+  (state: State) => ({
+    tooltip: state.tooltipConfig.tooltip
+  }),
+  {
+    tooltipConfigCreator
+  }
+)(CreateProject);

@@ -1,6 +1,26 @@
 .config-page {
-  width: 100%;
-  min-width: 60rem;
+  height: 100vh;
   padding-left: 14rem;
   box-sizing: border-box;
+  
+  header.menu {
+    margin-bottom: 5rem;
+    padding: 1rem;
+  }
+  
+  .reset-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 25rem;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  
+  label.input-container {
+    display: block;
+    width: 100%;
+    margin-bottom: 2rem;
+  }
 }

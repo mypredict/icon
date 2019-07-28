@@ -1,15 +1,18 @@
 import { combineReducers } from 'redux';
 
-import { teamProjects, personalProjects } from './projectsReducer';
+import { userMessage } from './userMessageReducer';
+import { teamProjects } from './projectsReducer';
 import { bulkEdit, selectAll } from './toolsReducer';
 import { selectIcons } from './selectIconsReducer';
 import { currentProject } from './currentProjectReducer';
+import { tooltipConfig } from './tooltipConfigReducer';
 
 export default combineReducers({
+  userMessage,
   teamProjects,
-  personalProjects,
   bulkEdit,
   selectAll,
   selectIcons,
-  currentProject
+  currentProject,
+  tooltipConfig
 });

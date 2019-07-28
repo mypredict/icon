@@ -1,4 +1,9 @@
-import { selectAll } from "./redux/reducers/toolsReducer";
+export interface UserMessage {
+  username: string,
+  userId: string,
+  avatar: string,
+  personalProjects: Array<string>
+}
 
 export interface CurrentProject {
   id: string,
@@ -9,13 +14,22 @@ export interface CurrentProject {
   link: string
 }
 
+export interface TooltipConfig {
+  tooltip: string,
+  rootStyle: Object,
+  icon: string,
+  iconStyle: Object,
+  delay: number
+}
+
 export interface State {
   teamProjects: Array<string>,
-  personalProjects: Array<string>,
+  tooltipConfig: TooltipConfig,
   bulkEdit: boolean,
   selectAll: boolean,
   selectIcons: Array<string>,
-  currentProject: CurrentProject
+  currentProject: CurrentProject,
+  userMessage: UserMessage
 }
 
 export interface Navigation {
@@ -35,4 +49,9 @@ export interface Action {
 export interface Fetch {
   url: string,
   method: 'get' | 'post'
+}
+
+export interface Response {
+  state: 'success' | 'error',
+  result: any
 }
