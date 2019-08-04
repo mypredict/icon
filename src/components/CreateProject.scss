@@ -53,14 +53,14 @@
     }
 
     input.svg {
-      margin-right: 6rem;
-
       &::after {
         content: 'SVG类型'
       }
     }
 
     input.img {
+      margin-right: 6rem;
+      
       &::after {
         content: '图片类型'
       }

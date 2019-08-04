@@ -1,11 +1,17 @@
 import React, { useReducer, useEffect } from 'react';
-import { useCopy } from '../custom_hooks/index';
+import { useCopy, useFetch3 } from '../custom_hooks/index';
 import { connect } from 'react-redux';
-import { BoolObj, State, Action } from '../interface';
-import { selectAllCreator, selectIconsCreator } from '../redux/actions';
+import { BoolObj, State, Action, Response } from '../interface';
+import {
+  selectAllCreator,
+  selectIconsCreator,
+  tooltipConfigCreator,
+  currentProjectCreator
+} from '../redux/actions';
 import Dialog from './basic_components/dialog/Dialog';
 import IconZoom from './IconZoom';
 import AddTo from './AddTo';
+import AutoImg from './basic_components/autoImg/AutoImg';
 import './IconShow.scss';
 
 function arrToObj(arr: Array<string>, status: boolean = false): BoolObj {
@@ -35,16 +41,22 @@ const dialogsDisplay = {
 };
 
 interface Props {
+  currentProject: object,
   icons: Array<string>,
+  projectId: string,
+  link: string,
   bulkEdit: boolean,
   selectAll: boolean,
   selectIcons: Array<string>,
   selectAllCreator: Function,
-  selectIconsCreator: Function
+  selectIconsCreator: Function,
+  tooltipConfigCreator: Function,
+  currentProjectCreator: Function
 }
 
 const IconShow = (props: Props) => {
   const copyCode = useCopy();
+  const request = useFetch3();
 
   function selectReducer(state: BoolObj, action: Action): BoolObj {
     let newIcons = { ...state };
@@ -110,7 +122,10 @@ const IconShow = (props: Props) => {
   }
 
   function handleDownload(icon: string): void {
-    console.log(icon, '下载图标');
+    window.open(
+      `http://localhost:8000/download?path=${encodeURIComponent(props.link)}&filename=${icon}`,
+      '_self'
+    );
   }
 
   function handleZoom(icon: string): void {
@@ -128,11 +143,27 @@ const IconShow = (props: Props) => {
     dialogsDispatch({ type: 'iconName', data: icon });
   }
 
-  function deleteIconsCallback(close: boolean): void {
-    if (close) {
-      dialogsDispatch({ type: 'deleteIcons' });
-    } else {
-      dialogsDispatch({ type: 'deleteIcons' });
+  function deleteIconsCallback(deleteIcon: boolean): void {
+    dialogsDispatch({ type: 'deleteIcons' });
+    if (deleteIcon) {
+      const postMessage = {
+        iconNames: [dialogs.iconName],
+        projectId: props.projectId,
+        path: props.link
+      };
+      request.post('/deleteIcon', postMessage, (data: Response) => {
+        if (data.state === 'success') {
+          props.currentProjectCreator({
+            ...props.currentProject,
+            icons: data.result.icons
+          });
+        } else {
+          props.tooltipConfigCreator({
+            tooltip: '删除图片失败',
+            icon: '#icon-shibai-'
+          });
+        }
+      });
     }
   }
 
@@ -147,12 +178,13 @@ const IconShow = (props: Props) => {
         callback={editNameCallback}
       />
       <IconZoom
+        src={`/icon/${props.link}/${dialogs.iconName}`}
+        alt={dialogs.iconName}
         display={dialogs.iconZoom}
-        iconType="svg"
-        iconName={dialogs.iconName}
         callback={() => dialogsDispatch({ type: 'iconZoom' })}
       />
       <AddTo
+        icon={dialogs.iconName}
         display={dialogs.addToProject}
         callback={() => dialogsDispatch({ type: 'addToProject' })}
       />
@@ -166,14 +198,18 @@ const IconShow = (props: Props) => {
           <figure
             className="icon-item"
             key={iconIndex}
-            style={{border: props.bulkEdit
-              ? icons[icon] ? '1px solid #e94d0f' : '1px solid #ccc'
-              : 'none'
+            style={{
+              border: props.bulkEdit
+                ? icons[icon] ? '1px solid #e94d0f' : '1px solid #ccc'
+                : 'none'
             }}
             onClick={() => props.bulkEdit && selectDispatch({ type: "selectSingle", data: icon })}>
-            <svg className="icon icon-self" aria-hidden="true">
-              <use xlinkHref="#icon-yiruwenjianjia" />
-            </svg>
+            <div className="icon-container">
+              <AutoImg
+                src={`/icon/${props.link}/${icon}`}
+                alt={icon}
+              />
+            </div>
             <figcaption>{icon}</figcaption>
             <div
               className="icon-operation"
@@ -241,13 +277,18 @@ const IconShow = (props: Props) => {
 
 export default connect(
   (state: State) => ({
+    currentProject: state.currentProject,
     icons: state.currentProject.icons,
+    projectId: state.currentProject.id,
+    link: state.currentProject.link,
     bulkEdit: state.bulkEdit,
     selectAll: state.selectAll,
     selectIcons: state.selectIcons
   }),
   {
     selectAllCreator,
-    selectIconsCreator
+    selectIconsCreator,
+    tooltipConfigCreator,
+    currentProjectCreator
   }
 )(IconShow);

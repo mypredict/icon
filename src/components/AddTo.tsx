@@ -5,10 +5,12 @@ import Button from './basic_components/button/Button';
 import './AddTo.scss';
 
 interface Props {
+  icon?: string,
   display: boolean,
   callback: Function,
   teamProjects: Array<string>,
-  personalProjects: Array<string>
+  personalProjects: Array<string>,
+  selectIcons: Array<string>
 }
 
 const AddTo = (props: Props) => {
@@ -60,6 +62,11 @@ const AddTo = (props: Props) => {
   }
 
   function addToCallback(): void {
+    if (props.icon) {
+      console.log(props.icon);
+    } else {
+      console.log(props.selectIcons);
+    }
     console.log(personalSelects, teamSelects);
   }
 
@@ -151,6 +158,7 @@ const AddTo = (props: Props) => {
 export default connect(
   (state: State) => ({
     teamProjects: state.teamProjects,
-    personalProjects: state.userMessage.personalProjects
+    personalProjects: state.userMessage.personalProjects,
+    selectIcons: state.selectIcons
   })
 )(AddTo);

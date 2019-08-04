@@ -9,6 +9,7 @@ export interface CurrentProject {
   id: string,
   name: string,
   type: string,
+  iconType: string,
   members: Array<string>,
   icons: Array<string>,
   link: string
@@ -33,6 +34,7 @@ export interface State {
 }
 
 export interface Navigation {
+  type: 'team' | 'personal',
   primaryNavigation: string,
   secondaryNavigation: Array<string>
 };

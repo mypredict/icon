@@ -17,7 +17,7 @@ interface Props {
 const CreateProject = (props: Props) => {
   const { history, callback, tooltipConfigCreator } = props;
   const [name, setName] = useState('');
-  const [iconType, setIconType] = useState('svg');
+  const [iconType, setIconType] = useState('img');
   const [attribution, setAttribution] = useState('personal');
 
   useKeyDown(() => {
@@ -26,7 +26,7 @@ const CreateProject = (props: Props) => {
 
   const requestCreateProject = useFetch3();
   function handleRequest() {
-    requestCreateProject.post('/create', {
+    requestCreateProject.post('/createProject', {
       name,
       iconType,
       type: attribution
@@ -41,8 +41,9 @@ const CreateProject = (props: Props) => {
         icon: '#icon-wancheng1',
         rootStyle: { boxShadow: 'none' }
       });
-      history.push(`/icon/${name}`);
+      history.push(`/icon/${attribution}/${name}`);
       callback();
+      window.location.reload();
       return;
     }
     if (createResponse.result === 'not login') {
@@ -65,7 +66,7 @@ const CreateProject = (props: Props) => {
         rootStyle: { boxShadow: 'none' }
       });
     }
-  }, [name, callback, history, tooltipConfigCreator]);
+  }, [name, callback, history, tooltipConfigCreator, attribution]);
 
   return (
     <div
@@ -95,19 +96,19 @@ const CreateProject = (props: Props) => {
           <div className="select-container">
             <label className="label">项目类型:</label>
             <input
-              className="input-radio svg"
-              name="iconType"
-              type="radio"
-              value="svg"
-              checked={iconType === "svg"}
-              onChange={(event) => setIconType(event.target.value)}
-            />
-            <input
               className="input-radio img"
               name="iconType"
               type="radio"
               value="img"
               checked={iconType === "img"}
+              onChange={(event) => setIconType(event.target.value)}
+            />
+            <input
+              className="input-radio svg"
+              name="iconType"
+              type="radio"
+              value="svg"
+              checked={iconType === "svg"}
               onChange={(event) => setIconType(event.target.value)}
             />
           </div>

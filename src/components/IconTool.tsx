@@ -1,8 +1,13 @@
 import React, { useReducer, useCallback } from 'react';
-import { useCopy } from '../custom_hooks/index';
+import { useCopy, useFetch3 } from '../custom_hooks/index';
 import { connect } from 'react-redux';
-import { State, Action } from '../interface';
-import { bulkEditCreator, selectAllCreator, tooltipConfigCreator } from '../redux/actions';
+import { State, Action, Response } from '../interface';
+import {
+  bulkEditCreator,
+  selectAllCreator,
+  tooltipConfigCreator,
+  currentProjectCreator
+} from '../redux/actions';
 import Dialog from './basic_components/dialog/Dialog';
 import CreateProject from './CreateProject';
 import UploadIcons from './UploadIcons';
@@ -33,15 +38,22 @@ interface Props {
   bulkEdit: boolean,
   selectIcons: Array<string>,
   selectAll: boolean,
-  iconsNum: number,
+  currentProject: object,
+  icons: Array<string>,
   link: string,
+  projectId: string,
+  projectName: string,
+  projectType: string,
+  teamProjects: Array<string>,
   bulkEditCreator: Function,
   selectAllCreator: Function,
-  tooltipConfigCreator: Function
+  tooltipConfigCreator: Function,
+  currentProjectCreator: Function
 }
 
 const IconTool = (props: Props) => {
   const copyLink = useCopy();
+  const request = useFetch3();
 
   function reducer(state: DialogsDisplay, action: Action): DialogsDisplay {
     switch(action.type) {
@@ -73,17 +85,64 @@ const IconTool = (props: Props) => {
 
   function deleteProjectCallback(close: boolean): void {
     if (close) {
+      const deleteProjectMessage = {
+        projectId: props.projectId,
+        name: props.projectName,
+        link: props.link,
+        type: props.projectType
+      }
       dispatch({ type: 'deleteProject' });
+      request.post('/deleteProject', deleteProjectMessage, (response: Response) => {
+        if (response.state === 'success') {
+          props.tooltipConfigCreator({
+            tooltip: '删除项目成功',
+            icon: '#icon-wancheng1'
+          });
+          if (props.projectType === 'team' && props.projectName === props.teamProjects[0]) {
+            props.history.push(`/icon/team/${props.teamProjects[1]}`);
+          } else {
+            props.history.push(`/icon/team/${props.teamProjects[0]}`);
+          }
+          return;
+        }
+        if (response.result === 'unRoot') {
+          props.tooltipConfigCreator({
+            tooltip: '没有删除此项目的权限',
+            icon: '#icon-shibai-'
+          });
+        } else {
+          props.tooltipConfigCreator({
+            tooltip: '删除项目失败',
+            icon: '#icon-shibai-'
+          });
+        }
+      })
     } else {
       dispatch({ type: 'deleteProject' });
     }
   }
 
-  function deleteIconsCallback(close: boolean): void {
-    if (close) {
-      dispatch({ type: 'deleteIcons' });
-    } else {
-      dispatch({ type: 'deleteIcons' });
+  function deleteIconsCallback(deleteIcons: boolean): void {
+    dispatch({ type: 'deleteIcons' });
+    if (deleteIcons) {
+      const postMessage = {
+        iconNames: props.selectIcons,
+        projectId: props.projectId,
+        path: props.link
+      };
+      request.post('/deleteIcon', postMessage, (data: Response) => {
+        if (data.state === 'success') {
+          props.currentProjectCreator({
+            ...props.currentProject,
+            icons: data.result.icons
+          });
+        } else {
+          props.tooltipConfigCreator({
+            tooltip: '删除图片失败',
+            icon: '#icon-shibai-'
+          });
+        }
+      });
     }
   }
 
@@ -149,8 +208,8 @@ const IconTool = (props: Props) => {
       </div>
       <div
         className="project-information"
-        style={{display: true ? 'flex' : 'none'}}>
-        <span className="icon-count">共{props.iconsNum}个图标</span>
+        style={{display: props.projectId ? 'flex' : 'none'}}>
+        <span className="icon-count">共{props.icons.length}个图标</span>
         <button className="btn-operation btn-copy" onClick={() => copyLink(props.link)}>
           <svg className="icon icon-operation" aria-hidden="true">
             <use xlinkHref="#icon-fuzhi" />
@@ -237,12 +296,18 @@ export default connect(
     bulkEdit: state.bulkEdit,
     selectAll: state.selectAll,
     selectIcons: state.selectIcons,
-    iconsNum: state.currentProject.icons.length,
-    link: state.currentProject.link
+    currentProject: state.currentProject,
+    icons: state.currentProject.icons,
+    link: state.currentProject.link,
+    projectId: state.currentProject.id,
+    projectName: state.currentProject.name,
+    projectType: state.currentProject.type,
+    teamProjects: state.teamProjects
   }),
   {
     bulkEditCreator,
     selectAllCreator,
-    tooltipConfigCreator
+    tooltipConfigCreator,
+    currentProjectCreator
   }
 )(IconTool);

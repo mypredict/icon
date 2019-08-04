@@ -65,7 +65,7 @@ const Login = (props: Props) => {
         personalProjects,
         userId: _id,
       });
-      history.push('/icon');
+      history.push('/icon/team');
     } else {
       loginResponse.result === 'passwordError' &&
         tooltipConfigCreator({ tooltip: '密码错误', icon: '#icon-shibai-' });
@@ -79,6 +79,7 @@ const Login = (props: Props) => {
   useEffect(() => {
     if (registerResponse.state === 'success') {
       tooltipConfigCreator({ tooltip: '注册成功', icon: '#icon-wancheng1' });
+      setLoginShow(true);
     } else {
       registerResponse.result === 'repeat' &&
         tooltipConfigCreator({ tooltip: '用户名已存在', icon: '#icon-shibai-' });

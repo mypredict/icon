@@ -14,21 +14,23 @@
     position: relative;
     width: 7rem;
     height: 9rem;
-    margin: 0 0.5rem 1rem;
-    padding: 0.5rem 0;
+    margin: 0 0.5rem 2rem;
+    padding-top: 0.5rem;
     border-radius: 5px;
     box-sizing: border-box;
     cursor: pointer;
     user-select: none;
 
-    svg.icon-self {
-      width: 3rem;
-      height: 3rem;
+    .icon-container {
+      position: relative;
+      width: 80%;
+      height: calc(100% - 3rem);
     }
 
     figcaption {
       width: 90%;
       height: 2rem;
+      line-height: 2rem;
       text-align: center;
       font-size: 1rem;
       overflow: hidden;
@@ -55,11 +57,11 @@
         justify-content: center;
         align-items: center;
         width: 50%;
-        height: 3rem;
+        height: calc(100% / 3);
         transition: background 0.3s;
 
         &:hover {
-          background: #333;
+          background: rgba(2, 12, 14, 0.6);
           border-radius: 5px;
         }
 

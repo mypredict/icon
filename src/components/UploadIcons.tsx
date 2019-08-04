@@ -1,40 +1,111 @@
 import React, { useState } from 'react';
-import { useFileSize } from '../custom_hooks/index';
+import { useFileSize, useUpload } from '../custom_hooks/index';
+import { connect } from 'react-redux';
+import { State, Response } from '../interface';
+import { tooltipConfigCreator, currentProjectCreator } from '../redux/actions';
 import Button from './basic_components/button/Button';
 import Upload from './basic_components/upload/Upload';
 import Progress from './basic_components/progress/Progress';
 import './UploadIcons.scss';
 
-interface Props {
-  display: boolean,
-  callback: Function
+interface Icons {
+  [key: string]: {
+    name: string,
+    size: number
+  }
 }
 
-const files = [
-  {
-    name: '温江名称.jpeg',
-    size: 1234
-  }
-]
+interface IconsProgress {
+  [key: string]: number
+}
+
+interface Props {
+  display: boolean,
+  callback: Function,
+  projectId: string,
+  path: string,
+  currentProject: object,
+  tooltipConfigCreator: Function,
+  currentProjectCreator: Function
+}
 
 const UploadIcons = (props: Props) => {
   const fileSize = useFileSize();
-  const [uploadStatus, setUploadStatus] = useState(true);
+  const request = useUpload();
 
-  function closeUploadCallback() {
-    // props.callback();
+  const [uploadIcons, setUploadIcons]: [Icons, Function] = useState({});
+  const [iconsProgress, setIconsProgress]: [IconsProgress, Function] = useState({});
+
+  function uploadFilesCallback(files: Array<File>): void {
+    // 过滤重复图标
+    const newFiles: Array<File> = [];
+    const newUploadIcons: Icons = {};
+    files.forEach((file) => {
+      if (uploadIcons[file.name]) {
+        props.tooltipConfigCreator({
+          tooltip: `上传文件中已包含${file.name}`,
+          icon: '#icon-shibai-',
+          rootStyle: { boxShadow: 'none' }
+        });
+      } else {
+        newUploadIcons[file.name] = {
+          name: file.name,
+          size: file.size
+        };
+        newFiles.push(file);
+      }
+    });
+    setUploadIcons({ ...uploadIcons, ...newUploadIcons });
+
+    // 开始上传
+    let maxIconsLength = 0;
+    const newIconsProgress: IconsProgress = {};
+    const message = {
+      projectId: props.projectId,
+      path: props.path
+    }
+    newFiles.forEach((file) => {
+      request(
+        message,
+        file,
+        (percentComplete: number, responseData?: any) => {
+          // 处理 useState 异步问题
+          newIconsProgress[file.name] = percentComplete;
+          setIconsProgress({ ...iconsProgress, ...newIconsProgress });
+          if (responseData && responseData.icons.length >= maxIconsLength) {
+            maxIconsLength = responseData.icons.length;
+            props.currentProjectCreator({
+              ...props.currentProject,
+              icons: responseData.icons
+            });
+          }
+        },
+        (responseError: Response) => {
+          if (responseError.result === 'repeat') {
+            props.tooltipConfigCreator({
+              tooltip: `服务器中已包含${file.name}`,
+              icon: '#icon-shibai-',
+              rootStyle: { boxShadow: 'none' }
+            });
+            newIconsProgress[file.name] = -1;
+            setIconsProgress({ ...iconsProgress, ...newIconsProgress });
+          } else {
+            props.tooltipConfigCreator({
+              tooltip: `${file.name}文件上传失败`,
+              icon: '#icon-shibai-',
+              rootStyle: { boxShadow: 'none' }
+            });
+            newIconsProgress[file.name] = -2;
+            setIconsProgress({ ...iconsProgress, ...newIconsProgress });
+          }
+        }
+      );
+    });
   }
 
-  function uploadStatusCallback() {
-    setUploadStatus(!uploadStatus);
-  }
-
-  function uploadFilesCallback(files: Array<object>): void {
-    console.log(11111, files);
-  }
-
-  function uploadFilesCallbackError(file: object): void {
-    alert('文件错误');
+  function handleClose() {
+    setUploadIcons({});
+    props.callback();
   }
 
   return (
@@ -49,7 +120,7 @@ const UploadIcons = (props: Props) => {
             btnStyle={{padding: "10px", borderRadius: "50%"}}
             btnBackground={"#fff"}
             iconStyle={{width: "1rem", height: "1rem"}}
-            callback={() => props.callback()}
+            callback={handleClose}
           />
         </header>
         <div className="content-container">
@@ -57,50 +128,60 @@ const UploadIcons = (props: Props) => {
           <Upload
             accept="image/*"
             callback={uploadFilesCallback}
-            errorCallback={uploadFilesCallbackError}
           />
           <div className="progress">
             {
-              files.map((file, fileIndex) => (
+              Object.values(uploadIcons).map((file, fileIndex) => (
                 <div className="file-progress-container" key={fileIndex}>
                   <div className="control">
                     <span className="file-name" title={file.name}>{file.name}</span>
                     <span>{fileSize(file.size)}</span>
-                    <div className="tools">
-                      <svg className="icon" aria-hidden="true">
-                        <use xlinkHref="#icon-bt_quxiao_b" />
-                      </svg>
-                      <svg
-                        className="icon"
-                        aria-hidden="true"
-                        onClick={() => {}}
-                      >
-                        <use xlinkHref={true ? "#icon-xueyuan-shipinzanting" : "#icon-kaishi1"} />
-                      </svg>
-                    </div>
+                    <span
+                      className="toolTip"
+                      style={{
+                        color: iconsProgress[file.name] === 100
+                          ? '#79dadf'
+                          : iconsProgress[file.name] >= 0
+                            ? '#555'
+                            : '#ee7f53'
+                      }}
+                    >
+                      {
+                        iconsProgress[file.name] === 100
+                          ? '完成'
+                          : iconsProgress[file.name] >= 0
+                            ? '上传中'
+                            : iconsProgress[file.name] === -1
+                              ? '重复'
+                              : '失败'
+                      }
+                    </span>
                   </div>
-                  <Progress value={60} />
+                  <Progress
+                    value={
+                      iconsProgress[file.name] > 0
+                        ? iconsProgress[file.name]
+                        : 0
+                    }
+                  />
                 </div>
               ))
             }
           </div>
         </div>
-        <footer className="btn-container">
-          <Button
-            name="全部取消"
-            disabled={files.length > 0 ? false : true}
-            callback={closeUploadCallback}
-            btnStyle={{marginRight: '1rem'}}
-          />
-          <Button
-            name={`全部${uploadStatus ? "暂停" : "开始"}`}
-            disabled={files.length > 0 ? false : true}
-            callback={uploadStatusCallback}
-          />
-        </footer>
       </div>
     </div>
   );
 };
 
-export default UploadIcons;
+export default connect(
+  (state: State) => ({
+    path: state.currentProject.link,
+    projectId: state.currentProject.id,
+    currentProject: state.currentProject
+  }),
+  {
+    tooltipConfigCreator,
+    currentProjectCreator
+  }
+)(UploadIcons);
