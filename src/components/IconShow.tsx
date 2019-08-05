@@ -113,11 +113,29 @@ const IconShow = (props: Props) => {
     dialogsDispatch({ type: 'iconName', data: icon });
   }
 
-  function editNameCallback(sure: boolean, newName: string) {
+  function editNameCallback(sure: boolean, name: string) {
+    dialogsDispatch({ type: 'editName' });
     if (sure) {
-      console.log(newName);
-    } else {
-      dialogsDispatch({ type: 'editName' });
+      const newName = name + dialogs.iconName.slice(dialogs.iconName.lastIndexOf('.'));
+      const message = {
+        projectId: props.projectId,
+        path: props.link,
+        newName,
+        oldName: dialogs.iconName
+      };
+      request.post('/iconRename', message, (data: Response) => {
+        if (data.state === 'success') {
+          props.currentProjectCreator({
+            ...props.currentProject,
+            icons: data.result.icons
+          });
+        } else {
+          props.tooltipConfigCreator({
+            tooltip: '修改图片名称失败',
+            icon: '#icon-shibai-'
+          });
+        }
+      });
     }
   }
 
@@ -167,14 +185,19 @@ const IconShow = (props: Props) => {
     }
   }
 
+  function handleCopyCode(icon: string) {
+    const iconTemplate = localStorage.getItem(`${props.projectId}Code`) || '{{iconName}}';
+    copyCode(iconTemplate.replace('{{iconName}}', icon));
+  }
+
   return (
     <div className="icon-show-page">
       <Dialog
         display={dialogs.editName}
         title="修改图标名称"
         input={true}
-        inputPlaceholder="图标名称"
-        maxLength={20}
+        inputPlaceholder="图标名称, 不包含扩展名"
+        maxLength={100}
         callback={editNameCallback}
       />
       <IconZoom
@@ -257,7 +280,7 @@ const IconShow = (props: Props) => {
               <div
                 className="icon-tool-container icon-copy-container"
                 title="复制代码"
-                onClick={() => copyCode(icon)}>
+                onClick={() => handleCopyCode(icon)}>
                 <svg className="icon icon-tool" aria-hidden="true">
                   <use xlinkHref="#icon-fuzhi" />
                 </svg>

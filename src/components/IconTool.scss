@@ -22,7 +22,7 @@
     align-items: center;
     height: 3rem;
 
-    button.btn-create {
+    button.btn-create, button.btn-template {
       margin: 0;
       padding: 0;
       color: #777;
@@ -34,7 +34,11 @@
       }
     }
 
-    svg.icon-create {
+    button.btn-template {
+      margin-left: 2rem;
+    }
+
+    svg.icon-create, svg.icon-template {
       width: 1rem;
       height: 1rem;
       margin-right: 5px;

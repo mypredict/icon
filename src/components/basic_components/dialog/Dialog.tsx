@@ -6,13 +6,14 @@ interface Props {
   display: boolean,
   title: string,
   input?: boolean,
+  defaultValue?: string,
   inputPlaceholder?: string,
   maxLength?: number,
   callback: Function
 }
 
 const Dialog = (props: Props) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(props.defaultValue);
 
   return (
     <div
@@ -59,6 +60,10 @@ const Dialog = (props: Props) => {
       </div>
     </div>
   );
+};
+
+Dialog.defaultProps = {
+  defaultValue: ''
 };
 
 export default Dialog;

@@ -1,4 +1,4 @@
-import React, { useReducer, useCallback } from 'react';
+import React, { useReducer } from 'react';
 import { useCopy, useFetch3 } from '../custom_hooks/index';
 import { connect } from 'react-redux';
 import { State, Action, Response } from '../interface';
@@ -10,12 +10,14 @@ import {
 } from '../redux/actions';
 import Dialog from './basic_components/dialog/Dialog';
 import CreateProject from './CreateProject';
+import IconTemplate from './IconTemplate';
 import UploadIcons from './UploadIcons';
 import AddTo from './AddTo';
 import './IconTool.scss';
 
 interface DialogsDisplay {
   createProject: boolean,
+  iconTemplate: boolean,
   uploadIcons: boolean,
   deleteProject: boolean,
   addToProject: boolean,
@@ -25,6 +27,7 @@ interface DialogsDisplay {
 
 const dialogsDisplay = {
   createProject: false,
+  iconTemplate: false,
   uploadIcons: false,
   deleteProject: false,
   addToProject: false,
@@ -59,6 +62,8 @@ const IconTool = (props: Props) => {
     switch(action.type) {
       case 'createProject':
         return { ...state, createProject: !state.createProject };
+      case 'iconTemplate':
+        return { ...state, iconTemplate: !state.iconTemplate };
       case 'uploadIcons':
         return { ...state, uploadIcons: !state.uploadIcons };
       case 'deleteProject':
@@ -122,7 +127,7 @@ const IconTool = (props: Props) => {
     }
   }
 
-  function deleteIconsCallback(deleteIcons: boolean): void {
+  function deleteIconsCallback(deleteIcons: boolean) {
     dispatch({ type: 'deleteIcons' });
     if (deleteIcons) {
       const postMessage = {
@@ -146,10 +151,8 @@ const IconTool = (props: Props) => {
     }
   }
 
-  function handleDownload(): void {
+  function handleDownload() {
     if (props.bulkEdit) {
-      props.selectIcons.length && alert('下载图标');
-    } else {
       alert('下载项目');
     }
   }
@@ -164,10 +167,6 @@ const IconTool = (props: Props) => {
     }
   }
 
-  const createProjectCallback = useCallback(() => {
-    dispatch({ type: 'createProject' });
-  }, []);
-
   console.log(123)
 
   return (
@@ -175,7 +174,11 @@ const IconTool = (props: Props) => {
       <CreateProject
         history={props.history}
         display={dialogs.createProject}
-        callback={createProjectCallback}
+        callback={() => dispatch({ type: 'createProject' })}
+      />
+      <IconTemplate
+        display={dialogs.iconTemplate}
+        callback={() => dispatch({ type: 'iconTemplate' })}
       />
       <UploadIcons
         display={dialogs.uploadIcons}
@@ -204,6 +207,16 @@ const IconTool = (props: Props) => {
             <use xlinkHref="#icon-add-author" />
           </svg>
           新建项目
+        </button>
+        <button
+          style={{display: props.projectId ? 'block' : 'none'}}
+          className="btn-operation btn-template"
+          onClick={() => dispatch({ type: 'iconTemplate' })}
+        >
+          <svg className="icon icon-create" aria-hidden="true">
+            <use xlinkHref="#icon-last-cache" />
+          </svg>
+          模板代码
         </button>
       </div>
       <div
