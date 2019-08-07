@@ -152,9 +152,10 @@ const IconTool = (props: Props) => {
   }
 
   function handleDownload() {
-    if (props.bulkEdit) {
-      alert('下载项目');
-    }
+    window.open(
+      `http://localhost:8000/batchDownload?path=${props.link}`,
+      '_self'
+    );
   }
 
   function createProject() {
@@ -239,6 +240,15 @@ const IconTool = (props: Props) => {
           上传图标
         </button>
         <button
+          className={`btn-operation`}
+          onClick={handleDownload}
+        >
+          <svg className="icon icon-operation" aria-hidden="true">
+            <use xlinkHref="#icon-unie122" />
+          </svg>
+          下载项目
+        </button>
+        <button
           className={`btn-operation ${props.bulkEdit && "btn-bulk-edit"}`}
           onClick={() => props.bulkEditCreator(!props.bulkEdit)}
         >
@@ -249,20 +259,6 @@ const IconTool = (props: Props) => {
             <use xlinkHref="#icon-piliang-copy" />
           </svg>
           批量编辑
-        </button>
-        <button
-          className={`btn-operation ${props.bulkEdit && !props.selectIcons.length && "btn-disabled"}`}
-          onClick={handleDownload}
-        >
-          <svg
-            className={`icon icon-operation ${props.bulkEdit && !props.selectIcons.length && "btn-disabled"}`}
-            aria-hidden="true"
-          >
-            <use xlinkHref="#icon-unie122" />
-          </svg>
-          {
-            props.bulkEdit ? "下载图标" : "下载项目"
-          }
         </button>
         <button
           className={`btn-operation ${props.bulkEdit && !props.selectIcons.length && "btn-disabled"}`}

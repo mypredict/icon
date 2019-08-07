@@ -26,6 +26,7 @@ const Input = (props: Props) => {
       name={props.name}
       className="input-page"
       spellCheck={false}
+      autoComplete="off"
       style={props.style}
       type={props.type}
       value={value}

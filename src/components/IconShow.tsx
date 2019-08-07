@@ -187,7 +187,7 @@ const IconShow = (props: Props) => {
 
   function handleCopyCode(icon: string) {
     const iconTemplate = localStorage.getItem(`${props.projectId}Code`) || '{{iconName}}';
-    copyCode(iconTemplate.replace('{{iconName}}', icon));
+    copyCode(JSON.parse(iconTemplate).replace('{{iconName}}', icon));
   }
 
   return (

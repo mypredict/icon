@@ -5,11 +5,13 @@ import { State, Response } from '../interface';
 import { tooltipConfigCreator, userMessageCreator } from '../redux/actions';
 import Button from './basic_components/button/Button';
 import Input from './basic_components/input/Input';
+import UploadHead from './UploadHead';
 import './Config.scss';
 
 interface Props {
   stateUsername: string,
   history: any,
+  avatar: string,
   tooltipConfigCreator: Function,
   userMessageCreator: Function
 }
@@ -19,6 +21,7 @@ const Config = (props: Props) => {
   const [username, setUsername] = useState(props.stateUsername);
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
+  const [cutHead, setCutHead] = useState(true);
 
   // 登出
   const [logoutUrl, setLogoutUrl] = useState('');
@@ -33,7 +36,6 @@ const Config = (props: Props) => {
       });
       history.push('/login');
     }
-    !stateUsername && history.push('/icon');
   }, [logoutResponse, stateUsername, history, tooltipConfigCreator, userMessageCreator]);
 
 
@@ -69,6 +71,10 @@ const Config = (props: Props) => {
 
   return (
     <div className="config-page">
+      <UploadHead
+        display={cutHead}
+        callback={() => setCutHead(false)}
+      />
       <header className="menu">
         <Button
           name="返回"
@@ -81,7 +87,23 @@ const Config = (props: Props) => {
           callback={() => setLogoutUrl('/logout')}
         />
       </header>
-      <div className="reset-container">
+      <div
+        className="cut-img-container"
+        onClick={() => setCutHead(true)}
+      >
+        <div className="prompt">
+          更换头像
+        </div>
+        <img
+          src={
+            props.avatar
+              ? props.avatar
+              : "https://avatars2.githubusercontent.com/u/27626713?s=460&v=4"
+          }
+          alt="个人头像"
+        />
+      </div>
+      <form className="reset-container">
         <label className="input-container">
           <Input
             type="text"
@@ -110,14 +132,15 @@ const Config = (props: Props) => {
           btnStyle={{width: "100%", marginTop: "1rem"}}
           callback={configResetCallback}
         />
-      </div>
+      </form>
     </div>
   );
 };
 
 export default connect(
   (state: State) => ({
-    stateUsername: state.userMessage.username
+    stateUsername: state.userMessage.username,
+    avatar: state.userMessage.avatar
   }),
   {
     tooltipConfigCreator,

@@ -4,8 +4,14 @@
   box-sizing: border-box;
   
   header.menu {
-    margin-bottom: 5rem;
+    margin-bottom: 2rem;
     padding: 1rem;
+  }
+
+  .cut-img-container {
+    width: 15rem;
+    height: 15rem;
+    margin: 0 auto;
   }
   
   .reset-container {
@@ -14,7 +20,7 @@
     justify-content: center;
     align-items: center;
     width: 25rem;
-    margin: 0 auto;
+    margin: 5rem auto;
     overflow: hidden;
   }
   
@@ -22,5 +28,36 @@
     display: block;
     width: 100%;
     margin-bottom: 2rem;
+  }
+
+  .cut-img-container {
+    position: relative;
+    width: 8rem;
+    height: 8rem;
+    margin-bottom: 5px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+
+    .prompt {
+      position: absolute;
+      width: 100%;
+      height: 3rem;
+      bottom: -3rem;
+      line-height: 3rem;
+      text-align: center;
+      color: #fff;
+      background: #000;
+      opacity: 0.5;
+      transition: bottom 0.3s;
+    }
+
+    &:hover .prompt {
+      bottom: 0;
+    }
+
+    img {
+      width: 100%;
+    }
   }
 }

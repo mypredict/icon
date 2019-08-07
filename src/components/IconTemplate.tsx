@@ -16,7 +16,7 @@ const IconTemplate = (props: Props) => {
   const [templateCode, setTemplateCode] = useState('{{iconName}}');
 
   function handleCreateNewTemplate() {
-    localStorage.setItem(`${props.projectId}Code`, templateCode);
+    localStorage.setItem(`${props.projectId}Code`, JSON.stringify(templateCode));
     props.tooltipConfigCreator({
       tooltip: '更改模板代码成功',
       icon: '#icon-wancheng1'

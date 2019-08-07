@@ -1,0 +1,46 @@
+.upload-head-dialog {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 50rem;
+  height: 25rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  box-sizing: border-box;
+  background: #fff;
+
+  header.icon-close-container {
+    padding: 0.5rem 0.5rem 0 0;
+    text-align: right;
+  }
+
+  .content-container {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    padding: 0 2rem 1rem;
+    cursor: pointer;
+
+    .canvasContainer {
+      width: 60%;
+      height: 100%;
+    }
+
+    .previewContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 35%;
+      height: 100%;
+    }
+  }
+  
+  footer.btn-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2rem 1rem;
+  }
+}
