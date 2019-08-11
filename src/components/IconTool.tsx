@@ -103,11 +103,7 @@ const IconTool = (props: Props) => {
             tooltip: '删除项目成功',
             icon: '#icon-wancheng1'
           });
-          if (props.projectType === 'team' && props.projectName === props.teamProjects[0]) {
-            props.history.push(`/icon/team/${props.teamProjects[1]}`);
-          } else {
-            props.history.push(`/icon/team/${props.teamProjects[0]}`);
-          }
+          props.history.push(`/icon/team/`);
           return;
         }
         if (response.result === 'unRoot') {
@@ -167,8 +163,6 @@ const IconTool = (props: Props) => {
       })
     }
   }
-
-  console.log(123)
 
   return (
     <div className="icon-tool">

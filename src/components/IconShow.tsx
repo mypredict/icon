@@ -129,12 +129,19 @@ const IconShow = (props: Props) => {
             ...props.currentProject,
             icons: data.result.icons
           });
-        } else {
+          return;
+        }
+        if (data.result === 'repeat') {
           props.tooltipConfigCreator({
-            tooltip: '修改图片名称失败',
+            tooltip: '图片名称重复',
             icon: '#icon-shibai-'
           });
+          return;
         }
+        props.tooltipConfigCreator({
+          tooltip: '修改图片名称失败',
+          icon: '#icon-shibai-'
+        });
       });
     }
   }

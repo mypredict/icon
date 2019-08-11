@@ -103,12 +103,10 @@ function cutImage (container, preview, upload, submit, fn) {
   }
   // 监听滚轮缩放(除了火狐浏览器)
   function mousewheelEvent (e) {
-    e.preventDefault()
     wheelZoom(e.wheelDelta)
   }
   // 兼容火狐浏览器(监听滚轮滚动)
   function DOMMouseScrollEvent (e) {
-    e.preventDefault()
     wheelZoom(-e.detail * 40)
   }
   // 滚轮滚动时的图片缩放

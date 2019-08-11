@@ -15,10 +15,10 @@ const AutoImg = (props: Props) => {
   const imgSelf: LegacyRef<HTMLImageElement> = useRef(null);
 
   const [iconNewWidth, iconNewHeight] = useIconSize({
-    iconWidth: imgSelf.current === null ? 0 : imgSelf.current.naturalWidth,
-    iconHeight: imgSelf.current === null ? 0 : imgSelf.current.naturalHeight,
-    containerWidth: containerSelf.current === null ? 0 : containerSelf.current.clientWidth,
-    containerHeight: containerSelf.current === null ? 0 : containerSelf.current.clientHeight,
+    iconWidth: imgSelf.current === null ? 1 : imgSelf.current.naturalWidth,
+    iconHeight: imgSelf.current === null ? 1 : imgSelf.current.naturalHeight,
+    containerWidth: containerSelf.current === null ? 1 : containerSelf.current.clientWidth,
+    containerHeight: containerSelf.current === null ? 1 : containerSelf.current.clientHeight,
     full: props.full
   });
 

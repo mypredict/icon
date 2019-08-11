@@ -21,7 +21,7 @@ const Config = (props: Props) => {
   const [username, setUsername] = useState(props.stateUsername);
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
-  const [cutHead, setCutHead] = useState(true);
+  const [cutHead, setCutHead] = useState(false);
 
   // 登出
   const [logoutUrl, setLogoutUrl] = useState('');

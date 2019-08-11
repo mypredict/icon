@@ -38,11 +38,7 @@ const Head = (props: Props) => {
                 个人设置
               </div>
               <img
-                src={
-                  props.avatar
-                    ? props.avatar
-                    : "https://avatars2.githubusercontent.com/u/27626713?s=460&v=4"
-                }
+                src={props.avatar}
                 alt="个人头像"
               />
             </NavLink>
