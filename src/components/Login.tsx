@@ -58,11 +58,12 @@ const Login = (props: Props) => {
   const { userMessageCreator, history } = props;
   useEffect(() => {
     if (loginResponse.state === 'success') {
-      const { username, _id, avatar, personalProjects } = loginResponse.result;
+      const { username, _id, avatar, personalProjects, teamProjects } = loginResponse.result;
       userMessageCreator({
         username,
         avatar,
         personalProjects,
+        teamProjects,
         userId: _id,
       });
       history.push('/icon/team');

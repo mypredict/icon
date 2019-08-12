@@ -3,7 +3,8 @@ export default {
     username: '',
     userId: '',
     avatar: '',
-    personalProjects: []
+    personalProjects: [],
+    teamProjects: [],
   },
   teamProjects: [],
   tooltipConfig: {

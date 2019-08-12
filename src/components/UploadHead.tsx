@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { useFetch3 } from '../custom_hooks/index';
 import { connect } from 'react-redux';
 import { State, Response } from '../interface';
-import { tooltipConfigCreator, userMessageCreator } from '../redux/actions';
+import { tooltipConfigCreator } from '../redux/actions';
 import Button from './basic_components/button/Button';
 import { cutImage } from '../tools/index.js';
 import './UploadHead.scss';
@@ -11,12 +11,11 @@ interface Props {
   userId: string,
   display: boolean,
   callback: Function,
-  tooltipConfigCreator: Function,
-  userMessageCreator: Function
+  tooltipConfigCreator: Function
 }
 
 const UploadHead = (props: Props) => {
-  const { userId, userMessageCreator } = props;
+  const { userId } = props;
   const canvasContainer = useRef(null);
   const previewContainer = useRef(null);
   const inputFile = useRef(null);
@@ -56,12 +55,12 @@ const UploadHead = (props: Props) => {
       }
     },
     [
+      request,
       canvasContainer,
       previewContainer,
       inputFile,
       submitBtn,
-      userId,
-      userMessageCreator
+      userId
     ]
   );
   
@@ -88,11 +87,12 @@ const UploadHead = (props: Props) => {
         </div>
         <footer className="btn-container">
           <input
+            className="input-img"
             ref={inputFile}
             accept="image/*"
             type="file"
           />
-          <button ref={submitBtn}>上传</button>
+          <button className="upload-img" ref={submitBtn}>上传</button>
         </footer>
       </div>
     </div>
@@ -105,7 +105,6 @@ export default connect(
     userId: state.userMessage.userId
   }),
   {
-    tooltipConfigCreator,
-    userMessageCreator
+    tooltipConfigCreator
   }
 )(UploadHead);

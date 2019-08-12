@@ -18,11 +18,12 @@ const Head = (props: Props) => {
   const response = useFetch('/isOnLine', 'GET');
   useEffect(() => {
     if (response.state === 'success') {
-      const { username, _id, avatar, personalProjects } = response.result;
+      const { username, _id, avatar, personalProjects, teamProjects } = response.result;
       userMessageCreator({
         username,
         avatar,
         personalProjects,
+        teamProjects,
         userId: _id,
       });
     }

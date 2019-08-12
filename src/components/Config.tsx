@@ -32,7 +32,8 @@ const Config = (props: Props) => {
         username: '',
         userId: '',
         avatar: '',
-        personalProjects: []
+        personalProjects: [],
+        teamProjects: []
       });
       history.push('/login');
     }

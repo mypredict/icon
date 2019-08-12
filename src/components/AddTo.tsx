@@ -157,7 +157,7 @@ const AddTo = (props: Props) => {
 
 export default connect(
   (state: State) => ({
-    teamProjects: state.teamProjects,
+    teamProjects: state.userMessage.teamProjects,
     personalProjects: state.userMessage.personalProjects,
     selectIcons: state.selectIcons
   })

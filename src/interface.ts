@@ -2,7 +2,8 @@ export interface UserMessage {
   username: string,
   userId: string,
   avatar: string,
-  personalProjects: Array<string>
+  personalProjects: Array<string>,
+  teamProjects: Array<string>
 }
 
 export interface CurrentProject {

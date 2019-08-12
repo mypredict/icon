@@ -6,7 +6,8 @@ interface UserMessageData {
   username?: string,
   userId?: string,
   avatar?: string,
-  personalProjects?: Array<string>
+  personalProjects?: Array<string>,
+  teamProjects?: Array<string>
 }
 
 interface UserMessageAction {
