@@ -39,6 +39,7 @@
       color: #555;
       box-sizing: border-box;
       overflow: auto;
+      white-space: pre-wrap;
 
       &::-webkit-scrollbar {
         width: 5px;

@@ -11,6 +11,7 @@ import {
 import Dialog from './basic_components/dialog/Dialog';
 import CreateProject from './CreateProject';
 import IconTemplate from './IconTemplate';
+import ColorMatching from './ColorMatching';
 import UploadIcons from './UploadIcons';
 import AddTo from './AddTo';
 import './IconTool.scss';
@@ -18,6 +19,7 @@ import './IconTool.scss';
 interface DialogsDisplay {
   createProject: boolean,
   iconTemplate: boolean,
+  colorMatching: boolean,
   uploadIcons: boolean,
   deleteProject: boolean,
   addToProject: boolean,
@@ -28,6 +30,7 @@ interface DialogsDisplay {
 const dialogsDisplay = {
   createProject: false,
   iconTemplate: false,
+  colorMatching: false,
   uploadIcons: false,
   deleteProject: false,
   addToProject: false,
@@ -64,6 +67,8 @@ const IconTool = (props: Props) => {
         return { ...state, createProject: !state.createProject };
       case 'iconTemplate':
         return { ...state, iconTemplate: !state.iconTemplate };
+      case 'colorMatching':
+        return { ...state, colorMatching: !state.colorMatching };
       case 'uploadIcons':
         return { ...state, uploadIcons: !state.uploadIcons };
       case 'deleteProject':
@@ -175,6 +180,10 @@ const IconTool = (props: Props) => {
         display={dialogs.iconTemplate}
         callback={() => dispatch({ type: 'iconTemplate' })}
       />
+      <ColorMatching
+        display={dialogs.colorMatching}
+        callback={() => dispatch({ type: 'colorMatching' })}
+      />
       <UploadIcons
         display={dialogs.uploadIcons}
         callback={() => dispatch({ type: 'uploadIcons' })}
@@ -212,6 +221,16 @@ const IconTool = (props: Props) => {
             <use xlinkHref="#icon-last-cache" />
           </svg>
           模板代码
+        </button>
+        <button
+          style={{display: props.projectId ? 'block' : 'none'}}
+          className="btn-operation btn-template"
+          onClick={() => dispatch({ type: 'colorMatching' })}
+        >
+          <svg className="icon icon-create" aria-hidden="true">
+            <use xlinkHref="#icon-yulanbeijingse" />
+          </svg>
+          调节背景色
         </button>
       </div>
       <div

@@ -1,10 +1,10 @@
 function handleCopy(content: string) {
-  const input = document.createElement('input');
-  input.value = content;
-  document.body.appendChild(input);
-  input.select();
+  const ele = document.createElement('textarea');
+  ele.value = content;
+  document.body.appendChild(ele);
+  ele.select();
   document.execCommand('copy');
-  document.body.removeChild(input);
+  document.body.removeChild(ele);
 }
 
 function useCopy(): Function {

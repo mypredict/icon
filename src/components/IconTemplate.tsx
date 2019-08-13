@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { State } from '../interface';
 import { tooltipConfigCreator } from '../redux/actions';
@@ -16,13 +16,18 @@ const IconTemplate = (props: Props) => {
   const [templateCode, setTemplateCode] = useState('{{iconName}}');
 
   function handleCreateNewTemplate() {
-    localStorage.setItem(`${props.projectId}Code`, JSON.stringify(templateCode));
+    localStorage.setItem(`${props.projectId}Code`, templateCode);
     props.tooltipConfigCreator({
       tooltip: '更改模板代码成功',
       icon: '#icon-wancheng1'
     });
     props.callback();
   }
+
+  const { projectId } = props;
+  useEffect(() => {
+    setTemplateCode(localStorage.getItem(`${projectId}Code`) || '{{iconName}}');
+  }, [projectId]);
 
   return (
     <div

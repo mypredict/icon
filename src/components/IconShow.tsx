@@ -194,7 +194,7 @@ const IconShow = (props: Props) => {
 
   function handleCopyCode(icon: string) {
     const iconTemplate = localStorage.getItem(`${props.projectId}Code`) || '{{iconName}}';
-    copyCode(JSON.parse(iconTemplate).replace('{{iconName}}', icon));
+    copyCode(iconTemplate.replace('{{iconName}}', icon));
   }
 
   return (
@@ -236,6 +236,7 @@ const IconShow = (props: Props) => {
             onClick={() => props.bulkEdit && selectDispatch({ type: "selectSingle", data: icon })}>
             <div className="icon-container">
               <AutoImg
+                rootStyle={{background: localStorage.getItem(`${props.projectId}Color`) || '#fff'}}
                 src={`/icon/${props.link}/${icon}`}
                 alt={icon}
               />
