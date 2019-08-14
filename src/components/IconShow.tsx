@@ -48,6 +48,7 @@ interface Props {
   bulkEdit: boolean,
   selectAll: boolean,
   selectIcons: Array<string>,
+  iconBgc: string,
   selectAllCreator: Function,
   selectIconsCreator: Function,
   tooltipConfigCreator: Function,
@@ -236,7 +237,7 @@ const IconShow = (props: Props) => {
             onClick={() => props.bulkEdit && selectDispatch({ type: "selectSingle", data: icon })}>
             <div className="icon-container">
               <AutoImg
-                rootStyle={{background: localStorage.getItem(`${props.projectId}Color`) || '#fff'}}
+                rootStyle={{background: props.iconBgc}}
                 src={`/icon/${props.link}/${icon}`}
                 alt={icon}
               />
@@ -314,7 +315,8 @@ export default connect(
     link: state.currentProject.link,
     bulkEdit: state.bulkEdit,
     selectAll: state.selectAll,
-    selectIcons: state.selectIcons
+    selectIcons: state.selectIcons,
+    iconBgc: state.iconBgc
   }),
   {
     selectAllCreator,

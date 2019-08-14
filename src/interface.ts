@@ -31,7 +31,8 @@ export interface State {
   selectAll: boolean,
   selectIcons: Array<string>,
   currentProject: CurrentProject,
-  userMessage: UserMessage
+  userMessage: UserMessage,
+  iconBgc: string
 }
 
 export interface Navigation {

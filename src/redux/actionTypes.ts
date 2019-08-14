@@ -7,3 +7,4 @@ export const TEAM_PROJECTS: string = 'TEAM_PROJECTS';
 export const CURRENT_PROJECT: string = 'CURRENT_PROJECT';
 export const USER_MESSAGE: string = 'USER_MESSAGE';
 export const TOOLTIP: string = 'TOOLTIP';
+export const ICON_BGC: string = 'ICON_BGC';

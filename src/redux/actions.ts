@@ -5,7 +5,8 @@ import {
   TEAM_PROJECTS,
   CURRENT_PROJECT,
   USER_MESSAGE,
-  TOOLTIP
+  TOOLTIP,
+  ICON_BGC
 } from './actionTypes';
 import { CurrentProject, UserMessage } from '../interface';
 
@@ -58,3 +59,9 @@ export const tooltipConfigCreator: Function = (tooltipConfig: IsTooltipConfig): 
   type: TOOLTIP,
   data: tooltipConfig
 });
+
+// 图标背景色
+export const iconBgcCreator: Function = (iconBgc: string): object => ({
+  type: ICON_BGC,
+  data: iconBgc
+})

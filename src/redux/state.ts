@@ -25,5 +25,6 @@ export default {
     link: '',
     members: [],
     icons: []
-  }
+  },
+  iconBgc: '#fff'
 }

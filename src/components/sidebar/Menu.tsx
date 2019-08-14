@@ -3,7 +3,15 @@ import { useFetch3 } from '../../custom_hooks/index';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { State, Response, Navigation } from '../../interface';
-import { teamProjectsCreator, tooltipConfigCreator, currentProjectCreator } from '../../redux/actions';
+import {
+  teamProjectsCreator,
+  tooltipConfigCreator,
+  currentProjectCreator,
+  bulkEditCreator,
+  selectAllCreator,
+  selectIconsCreator,
+  iconBgcCreator
+} from '../../redux/actions';
 import Button from '../basic_components/button/Button';
 import './Menu.scss';
 
@@ -11,12 +19,15 @@ interface Props {
   history: any,
   teamProjects: Array<string>,
   personalProjects: Array<string>,
-  currentId: string,
   currentName: string,
   currentType: string,
   teamProjectsCreator: Function,
   tooltipConfigCreator: Function,
-  currentProjectCreator: Function
+  currentProjectCreator: Function,
+  bulkEditCreator: Function,
+  selectAllCreator: Function,
+  selectIconsCreator: Function,
+  iconBgcCreator: Function
 }
 
 const Menu = (props: Props) => {
@@ -28,7 +39,11 @@ const Menu = (props: Props) => {
     personalProjects,
     teamProjectsCreator,
     tooltipConfigCreator,
-    currentProjectCreator
+    currentProjectCreator,
+    bulkEditCreator,
+    selectAllCreator,
+    selectIconsCreator,
+    iconBgcCreator
   } = props;
   const [chapterTitleNum, setChapterTitleNum] = useState(0);
   const request = useFetch3();
@@ -48,6 +63,7 @@ const Menu = (props: Props) => {
       if (!['team', 'personal'].includes(type) || !name) {
         return;
       }
+      selectIconsCreator([]);
       // 路径都对则请求当前项目
       request.get(`/icon/${type}/${name}`, (response: Response) => {
         if (response.state === 'error') {
@@ -81,13 +97,20 @@ const Menu = (props: Props) => {
           members: [userId],
           icons
         });
+        bulkEditCreator(false);
+        selectAllCreator(false);
+        iconBgcCreator(localStorage.getItem(`${_id}Color`) || '#fff');
       });
   }, [
     request,
     currentName,
     currentType,
     tooltipConfigCreator,
-    currentProjectCreator
+    currentProjectCreator,
+    bulkEditCreator,
+    selectAllCreator,
+    selectIconsCreator,
+    iconBgcCreator
   ]);
 
   useEffect(() => {
@@ -174,13 +197,16 @@ export default connect(
   (state: State) => ({
     personalProjects: state.userMessage.personalProjects,
     teamProjects: state.teamProjects,
-    currentId: state.currentProject.id,
     currentName: state.currentProject.name,
     currentType: state.currentProject.type
   }),
   {
     teamProjectsCreator,
     tooltipConfigCreator,
-    currentProjectCreator
+    currentProjectCreator,
+    bulkEditCreator,
+    selectAllCreator,
+    selectIconsCreator,
+    iconBgcCreator
   }
 )(Menu);

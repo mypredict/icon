@@ -2,23 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { SketchPicker } from 'react-color';
 import { State } from '../interface';
+import { iconBgcCreator } from '../redux/actions';
 import Button from './basic_components/button/Button';
 import './ColorMatching.scss';
 
 interface Props {
   projectId: string,
   display: boolean,
-  callback: Function
+  callback: Function,
+  iconBgcCreator: Function
 }
 
 const ColorMatching = (props: Props) => {
   const [color, setColor] = useState('#fff');
   function handleChangeComplete(color: any) {
     setColor(color);
+    iconBgcCreator(color.hex);
     localStorage.setItem(`${props.projectId}Color`, color.hex);
   }
 
-  const { projectId } = props;
+  const { projectId, iconBgcCreator } = props;
   useEffect(() => {
     setColor(localStorage.getItem(`${projectId}Color`) || '#fff');
   }, [projectId]);
@@ -53,5 +56,8 @@ const ColorMatching = (props: Props) => {
 export default connect(
   (state: State) => ({
     projectId: state.currentProject.id
-  })
+  }),
+  {
+    iconBgcCreator
+  }
 )(ColorMatching);

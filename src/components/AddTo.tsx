@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
+import { useFetch3 } from '../custom_hooks/index';
 import { connect } from 'react-redux';
-import { State } from '../interface';
+import { State, Response } from '../interface';
 import Button from './basic_components/button/Button';
 import './AddTo.scss';
 
@@ -8,6 +9,7 @@ interface Props {
   icon?: string,
   display: boolean,
   callback: Function,
+  path: string,
   teamProjects: Array<string>,
   personalProjects: Array<string>,
   selectIcons: Array<string>
@@ -61,13 +63,17 @@ const AddTo = (props: Props) => {
     }
   }
 
+  const request = useFetch3();
   function addToCallback(): void {
-    if (props.icon) {
-      console.log(props.icon);
-    } else {
-      console.log(props.selectIcons);
-    }
-    console.log(personalSelects, teamSelects);
+    const message = {
+      personalSelects,
+      teamSelects,
+      path: props.path,
+      icons: props.icon ? [props.icon] : props.selectIcons
+    };
+    request.post('/addTo', message, (data: Response) => {
+      console.log(data);
+    });
   }
 
   return (
@@ -157,6 +163,7 @@ const AddTo = (props: Props) => {
 
 export default connect(
   (state: State) => ({
+    path: state.currentProject.link,
     teamProjects: state.userMessage.teamProjects,
     personalProjects: state.userMessage.personalProjects,
     selectIcons: state.selectIcons

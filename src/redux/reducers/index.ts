@@ -6,6 +6,7 @@ import { bulkEdit, selectAll } from './toolsReducer';
 import { selectIcons } from './selectIconsReducer';
 import { currentProject } from './currentProjectReducer';
 import { tooltipConfig } from './tooltipConfigReducer';
+import { iconBgc } from './iconBgcReducer';
 
 export default combineReducers({
   userMessage,
@@ -14,5 +15,6 @@ export default combineReducers({
   selectAll,
   selectIcons,
   currentProject,
-  tooltipConfig
+  tooltipConfig,
+  iconBgc
 });
