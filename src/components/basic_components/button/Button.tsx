@@ -2,6 +2,7 @@ import React from 'react';
 import './Button.scss';
 
 interface Props {
+  type?: 'button' | 'submit' | 'reset' | undefined,
   disabledKeyDown?: boolean,
   disabled?: boolean,
   name?: string,
@@ -17,6 +18,7 @@ interface Props {
 const Button = (props: Props) => {
   return (
     <button
+      type={props.type}
       style={{
         ...props.btnStyle,
         background: props.disabled ? "#eee" : props.btnBackground,
@@ -43,6 +45,7 @@ const Button = (props: Props) => {
 };
 
 Button.defaultProps = {
+  type: 'button',
   disabledKeyDown: true,
   disabled: false,
   name: '',

@@ -103,7 +103,7 @@ const Login = (props: Props) => {
           callback={() => setLoginShow(true)}
         />
       </header>
-      <div
+      <form
         className="login-container"
         style={{height: loginShow ? 'auto' : 0}}
       >
@@ -127,8 +127,8 @@ const Login = (props: Props) => {
           btnStyle={{width: "100%", marginTop: "1rem"}}
           callback={loginCallback}
         />
-      </div>
-      <div className="register-container" style={{height: loginShow ? 0 : 'auto'}}>
+      </form>
+      <form className="register-container" style={{height: loginShow ? 0 : 'auto'}}>
         <label className="input-container">
           <Input
             type="text"
@@ -156,7 +156,7 @@ const Login = (props: Props) => {
           btnStyle={{width: "100%", marginTop: "1rem"}}
           callback={registerCallback}
         />
-      </div>
+      </form>
     </div>
   );
 };

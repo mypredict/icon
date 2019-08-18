@@ -104,7 +104,7 @@ const Config = (props: Props) => {
           alt="个人头像"
         />
       </div>
-      <div className="reset-container">
+      <form className="reset-container">
         <label className="input-container">
           <Input
             type="text"
@@ -133,7 +133,7 @@ const Config = (props: Props) => {
           btnStyle={{width: "100%", marginTop: "1rem"}}
           callback={configResetCallback}
         />
-      </div>
+      </form>
     </div>
   );
 };
