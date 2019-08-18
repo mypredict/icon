@@ -35,13 +35,36 @@
     }
 
     button.btn-template {
-      margin-left: 2rem;
+      margin-left: 1.5rem;
     }
 
     svg.icon-create, svg.icon-template {
       width: 1rem;
       height: 1rem;
       margin-right: 5px;
+    }
+  }
+
+  button.btn-copy {
+    position: relative;
+    
+    &:after {
+      position: absolute;
+      content: "复制链接成功";
+      left: 50%;
+      top: calc(100% + 0.5rem);
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      color: #159ed4;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 1s ease-in 0.5s, top 1s ease-in;
+    }
+
+    &:active:after {
+      top: 100%;
+      opacity: 1;
+      transition: all 0s;
     }
   }
 
@@ -52,7 +75,7 @@
     font-size: 0.9rem;
 
     span.icon-count {
-      min-width: 4.5rem;
+      min-width: 5rem;
       color: #777;
       font-weight: 500;
     }
@@ -61,29 +84,6 @@
       width: 0.9rem;
       height: 0.9rem;
       margin-right: 5px;
-    }
-
-    button.btn-copy {
-      position: relative;
-      
-      &:after {
-        position: absolute;
-        content: "复制链接成功";
-        left: 50%;
-        top: calc(100% + 0.5rem);
-        transform: translateX(-50%);
-        font-size: 0.8rem;
-        color: #159ed4;
-        white-space: nowrap;
-        opacity: 0;
-        transition: opacity 1s ease-in 0.5s, top 1s ease-in;
-      }
-  
-      &:active:after {
-        top: 100%;
-        opacity: 1;
-        transition: all 0s;
-      }
     }
 
     button.btn-disabled, svg.btn-disabled {

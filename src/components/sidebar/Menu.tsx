@@ -45,11 +45,17 @@ const Menu = (props: Props) => {
     selectIconsCreator,
     iconBgcCreator
   } = props;
-  const [chapterTitleNum, setChapterTitleNum] = useState(0);
+  const [chapterTitleNum, setChapterTitleNum] = useState({
+    team: true,
+    personal: true
+  });
   const request = useFetch3();
 
-  function handleClick(chapterIndex: number): void {
-    setChapterTitleNum(chapterIndex);
+  function handleClick(chapterType: 'team' | 'personal'): void {
+    setChapterTitleNum({
+      ...chapterTitleNum,
+      [chapterType]: !chapterTitleNum[chapterType]
+    });
   }
 
   // 监听路由的变化并请求当前项目的数据
@@ -122,17 +128,16 @@ const Menu = (props: Props) => {
     listenUrl(history.location);
   }, [history, listenUrl]);
 
-  const getTeamProjectList = useCallback(() => {
-    request.get('/teamProjects', (response: Response) => {
-      const newTeamProjects = response.result.map((item: any) => item.name);
-      teamProjectsCreator(newTeamProjects.reverse());
-    });
-  }, [request, teamProjectsCreator]);
-
   // 获取团队项目列表
   useEffect(() => {
-    getTeamProjectList();
-  }, []);
+    if (teamProjects.length > 0) {
+      return;
+    }
+    request.get('/teamProjects', (response: Response) => {
+      const newTeamProjects = response.result.map((item: any) => item.name).reverse();
+      teamProjectsCreator(newTeamProjects);
+    });
+  }, [request, teamProjects, teamProjectsCreator]);
   
   // 更新项目列表
   const [menuJson, setMenuJson]: [Array<Navigation>, Function] = useState([]);
@@ -159,32 +164,29 @@ const Menu = (props: Props) => {
             className="chapter"
             key={chapterIndex}
             style={{
-              height: chapterTitleNum === chapterIndex ? "auto" : "2rem"
+              height: chapterTitleNum[chapter.type]
+                ? `${chapter.secondaryNavigation.length * 2 + 2}rem`
+                : "2rem"
             }}
-            onClick={() => handleClick(chapterIndex)}>
+          >
             <Button
               name={chapter.primaryNavigation}
               btnBackground="#fff"
               btnColor={props.currentType === chapter.type ? "#159ed4" : ""}
+              callback={() => handleClick(chapter.type)}
             />
             {
-              chapter.secondaryNavigation.length > 0
-                ? chapter.secondaryNavigation.map((item, itemIndex) => (
-                  <NavLink
-                    to={`/icon/${chapter.type}/${item}`}
-                    className="project-menu"
-                    key={itemIndex}
-                  >
-                    <div className="chapter-item">
-                      {item}
-                    </div>
-                  </NavLink>
-                ))
-                : (
+              chapter.secondaryNavigation.map((item, itemIndex) => (
+                <NavLink
+                  to={`/icon/${chapter.type}/${item}`}
+                  className="project-menu"
+                  key={itemIndex}
+                >
                   <div className="chapter-item">
-                    还没有创建项目...
+                    {item}
                   </div>
-                )
+                </NavLink>
+              ))
             }
           </div>
         ))

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useKeyDown } from '../custom_hooks/index';
 import { connect } from 'react-redux';
 import { SketchPicker } from 'react-color';
 import { State } from '../interface';
@@ -26,6 +27,14 @@ const ColorMatching = (props: Props) => {
     setColor(localStorage.getItem(`${projectId}Color`) || '#fff');
   }, [projectId]);
 
+  useKeyDown(() => {
+    props.callback();
+  }, 13);
+
+  useKeyDown(() => {
+    props.callback();
+  }, 27);
+
   return (
     <div
       className="dialog-mask"
@@ -45,7 +54,7 @@ const ColorMatching = (props: Props) => {
           <SketchPicker
             width={'90%'}
             color={color}
-            onChangeComplete={handleChangeComplete}
+            onChange={handleChangeComplete}
           />
         </div>
       </div>

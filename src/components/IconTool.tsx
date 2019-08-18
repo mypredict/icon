@@ -109,6 +109,7 @@ const IconTool = (props: Props) => {
             icon: '#icon-wancheng1'
           });
           props.history.push(`/icon/team/`);
+          window.location.reload();
           return;
         }
         if (response.result === 'unRoot') {
@@ -171,56 +172,74 @@ const IconTool = (props: Props) => {
 
   return (
     <div className="icon-tool">
-      <CreateProject
-        history={props.history}
-        display={dialogs.createProject}
-        callback={() => dispatch({ type: 'createProject' })}
-      />
-      <IconTemplate
-        display={dialogs.iconTemplate}
-        callback={() => dispatch({ type: 'iconTemplate' })}
-      />
-      <ColorMatching
-        display={dialogs.colorMatching}
-        callback={() => dispatch({ type: 'colorMatching' })}
-      />
+      {
+        dialogs.createProject &&
+        <CreateProject
+          history={props.history}
+          display={dialogs.createProject}
+          callback={() => dispatch({ type: 'createProject' })}
+        />
+      }
+      {
+        dialogs.iconTemplate &&
+        <IconTemplate
+          display={dialogs.iconTemplate}
+          callback={() => dispatch({ type: 'iconTemplate' })}
+        />
+      }
+      {
+        dialogs.colorMatching &&
+        <ColorMatching
+          display={dialogs.colorMatching}
+          callback={() => dispatch({ type: 'colorMatching' })}
+        />
+      }
       <UploadIcons
         display={dialogs.uploadIcons}
         callback={() => dispatch({ type: 'uploadIcons' })}
       />
-      <AddTo
-        display={dialogs.addToProject}
-        callback={() => dispatch({ type: 'addToProject' })}
-      />
-      <Dialog
-        display={dialogs.deleteProject}
-        title={"确定删除此项目?"}
-        callback={deleteProjectCallback}
-      />
-      <Dialog
-        display={dialogs.deleteIcons}
-        title={"确定删除选中图标?"}
-        callback={deleteIconsCallback}
-      />
+      {
+        dialogs.addToProject &&
+        <AddTo
+          display={dialogs.addToProject}
+          callback={() => dispatch({ type: 'addToProject' })}
+        />
+      }
+      {
+        dialogs.deleteProject &&
+        <Dialog
+          display={dialogs.deleteProject}
+          title={"确定删除此项目?"}
+          callback={deleteProjectCallback}
+        />
+      }
+      {
+        dialogs.deleteIcons &&
+        <Dialog
+          display={dialogs.deleteIcons}
+          title={"确定删除选中图标?"}
+          callback={deleteIconsCallback}
+        />
+      }
       <div className="project-create">
         <button
           className="btn-operation btn-create"
           onClick={createProject}
         >
           <svg className="icon icon-create" aria-hidden="true">
-            <use xlinkHref="#icon-add-author" />
+            <use xlinkHref="#icon-xinjian" />
           </svg>
           新建项目
         </button>
         <button
           style={{display: props.projectId ? 'block' : 'none'}}
-          className="btn-operation btn-template"
-          onClick={() => dispatch({ type: 'iconTemplate' })}
+          className="btn-operation btn-template btn-copy"
+          onClick={() => copyLink(props.link)}
         >
           <svg className="icon icon-create" aria-hidden="true">
-            <use xlinkHref="#icon-last-cache" />
+            <use xlinkHref="#icon-fuzhi" />
           </svg>
-          模板代码
+          复制链接
         </button>
         <button
           style={{display: props.projectId ? 'block' : 'none'}}
@@ -232,17 +251,26 @@ const IconTool = (props: Props) => {
           </svg>
           调节背景色
         </button>
+        <button
+          style={{display: props.projectId ? 'block' : 'none'}}
+          className="btn-operation btn-template"
+          onClick={() => dispatch({ type: 'iconTemplate' })}
+        >
+          <svg className="icon icon-create" aria-hidden="true">
+            <use xlinkHref="#icon-last-cache" />
+          </svg>
+          模板代码
+        </button>
       </div>
       <div
         className="project-information"
         style={{display: props.projectId ? 'flex' : 'none'}}>
-        <span className="icon-count">共{props.icons.length}个图标</span>
-        <button className="btn-operation btn-copy" onClick={() => copyLink(props.link)}>
-          <svg className="icon icon-operation" aria-hidden="true">
-            <use xlinkHref="#icon-fuzhi" />
-          </svg>
-          复制链接
-        </button>
+        <span
+          className="icon-count"
+          style={{minWidth: props.bulkEdit ? '6rem' : '5rem'}}
+        >
+          共{props.bulkEdit ? `${props.selectIcons.length}/` : ''}{props.icons.length}个图标
+        </span>
         <button
           className="btn-operation"
           onClick={() => dispatch({ type: 'uploadIcons' })}

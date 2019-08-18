@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect, useState } from 'react';
 import { useCopy, useFetch3 } from '../custom_hooks/index';
 import { connect } from 'react-redux';
 import { BoolObj, State, Action, Response } from '../interface';
@@ -8,10 +8,13 @@ import {
   tooltipConfigCreator,
   currentProjectCreator
 } from '../redux/actions';
+import Search from './basic_components/search/Search';
+import Button from './basic_components/button/Button';
 import Dialog from './basic_components/dialog/Dialog';
 import IconZoom from './IconZoom';
 import AddTo from './AddTo';
 import AutoImg from './basic_components/autoImg/AutoImg';
+import SingleIconTools from './SingleIconTools';
 import './IconShow.scss';
 
 function arrToObj(arr: Array<string>, status: boolean = false): BoolObj {
@@ -41,6 +44,8 @@ const dialogsDisplay = {
 };
 
 interface Props {
+  userId: string,
+  members: Array<string>,
   currentProject: object,
   icons: Array<string>,
   projectId: string,
@@ -109,11 +114,6 @@ const IconShow = (props: Props) => {
     selectDispatch({ type: "selectAll" });
   }, [props.selectAll]);
 
-  function handleEditName(icon: string): void {
-    dialogsDispatch({ type: 'editName' });
-    dialogsDispatch({ type: 'iconName', data: icon });
-  }
-
   function editNameCallback(sure: boolean, name: string) {
     dialogsDispatch({ type: 'editName' });
     if (sure) {
@@ -147,28 +147,6 @@ const IconShow = (props: Props) => {
     }
   }
 
-  function handleDownload(icon: string): void {
-    window.open(
-      `http://localhost:8000/download?path=${encodeURIComponent(props.link)}&filename=${icon}`,
-      '_self'
-    );
-  }
-
-  function handleZoom(icon: string): void {
-    dialogsDispatch({ type: 'iconZoom' });
-    dialogsDispatch({ type: 'iconName', data: icon });
-  }
-
-  function handleAddTo(icon: string): void {
-    dialogsDispatch({ type: 'addToProject' });
-    dialogsDispatch({ type: 'iconName', data: icon });
-  }
-
-  function handleDelete(icon: string): void {
-    dialogsDispatch({ type: 'deleteIcons' });
-    dialogsDispatch({ type: 'iconName', data: icon });
-  }
-
   function deleteIconsCallback(deleteIcon: boolean): void {
     dialogsDispatch({ type: 'deleteIcons' });
     if (deleteIcon) {
@@ -193,110 +171,131 @@ const IconShow = (props: Props) => {
     }
   }
 
-  function handleCopyCode(icon: string) {
-    const iconTemplate = localStorage.getItem(`${props.projectId}Code`) || '{{iconName}}';
-    copyCode(iconTemplate.replace('{{iconName}}', icon));
+  function singleToolClick(icon: string, type: string) {
+    dialogsDispatch({ type: 'iconName', data: icon });
+    type === 'handleEditName' && dialogsDispatch({ type: 'editName' });
+    type === 'handleZoom' && dialogsDispatch({ type: 'iconZoom' });
+    type === 'handleAddTo' && dialogsDispatch({ type: 'addToProject' });
+    type === 'handleDelete' && dialogsDispatch({ type: 'deleteIcons' });
+    if (type === 'handleCopyCode') {
+      const iconTemplate = localStorage.getItem(`${props.projectId}Code`) || '{{iconName}}';
+      copyCode(iconTemplate.replace('{{iconName}}', icon));
+    }
+    if (type === 'handleDownload') {
+      window.open(
+        `http://localhost:8000/download?path=${encodeURIComponent(props.link)}&filename=${icon}`,
+        '_self'
+      );
+    }
+  }
+
+  // 搜索筛选
+  const [searchGroup, setSearchGroup] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+  function searchCallback(input: string) {
+    if (input.includes(':')) {
+      const [group, value] = input.split(':');
+      setSearchGroup(group.trim().toLowerCase());
+      setSearchValue(value.trim().toLowerCase());
+    } else {
+      setSearchGroup('');
+      setSearchValue(input.trim().toLowerCase());
+    }
   }
 
   return (
-    <div className="icon-show-page">
-      <Dialog
-        display={dialogs.editName}
-        title="修改图标名称"
-        input={true}
-        inputPlaceholder="图标名称, 不包含扩展名"
-        maxLength={100}
-        callback={editNameCallback}
-      />
+    <div
+      className="icon-show-page"
+      style={{display: props.projectId ? "flex" : "none"}}
+    >
+      {
+        dialogs.editName &&
+        <Dialog
+          display={dialogs.editName}
+          title="修改图标名称"
+          input={true}
+          inputPlaceholder="图标名称, 不包含扩展名"
+          maxLength={100}
+          callback={editNameCallback}
+        />
+      }
       <IconZoom
         src={`/icon/${props.link}/${dialogs.iconName}`}
         alt={dialogs.iconName}
         display={dialogs.iconZoom}
         callback={() => dialogsDispatch({ type: 'iconZoom' })}
       />
-      <AddTo
-        icon={dialogs.iconName}
-        display={dialogs.addToProject}
-        callback={() => dialogsDispatch({ type: 'addToProject' })}
-      />
-      <Dialog
-        display={dialogs.deleteIcons}
-        title={"确定删除选中图标?"}
-        callback={deleteIconsCallback}
-      />
       {
-        props.icons.map((icon, iconIndex) => (
-          <figure
-            className="icon-item"
-            key={iconIndex}
-            style={{
-              border: props.bulkEdit
-                ? icons[icon] ? '1px solid #e94d0f' : '1px solid #ccc'
-                : 'none'
-            }}
-            onClick={() => props.bulkEdit && selectDispatch({ type: "selectSingle", data: icon })}>
-            <div className="icon-container">
-              <AutoImg
-                rootStyle={{background: props.iconBgc}}
-                src={`/icon/${props.link}/${icon}`}
-                alt={icon}
-              />
-            </div>
-            <figcaption>{icon}</figcaption>
-            <div
-              className="icon-operation"
-              style={{display: props.bulkEdit ? 'none' : 'flex'}}>
-              <div
-                className="icon-tool-container"
-                title="修改代码名称"
-                onClick={() => handleEditName(icon)}>
-                <svg className="icon icon-tool" aria-hidden="true">
-                  <use xlinkHref="#icon-grammar" />
-                </svg>
+        dialogs.addToProject &&
+        <AddTo
+          icon={dialogs.iconName}
+          display={dialogs.addToProject}
+          callback={() => dialogsDispatch({ type: 'addToProject' })}
+        />
+      }
+      {
+        dialogs.deleteIcons &&
+        <Dialog
+          display={dialogs.deleteIcons}
+          title={"确定删除选中图标?"}
+          callback={deleteIconsCallback}
+        />
+      }
+      <div className="icon-group-head">
+        <span className="group-name">
+          <svg className="icon icon-group" aria-hidden="true">
+            <use xlinkHref="#icon-fenzu" />
+          </svg>
+          {"base"}
+        </span>
+        <div className="group-tools">
+          <Search callback={searchCallback} placeholder={"value | group:value"} />
+          {
+            props.members.includes(props.userId) && (
+              <>
+                <Button
+                  name="新建分组"
+                  btnStyle={{ borderRadius: "1rem", marginLeft: '1.5rem' }}
+                  callback={() => {}}
+                />
+                <Button
+                  name="图片分组"
+                  btnStyle={{ borderRadius: "1rem", marginLeft: '1.5rem' }}
+                  callback={() => {}}
+                />
+              </>
+            )
+          }
+        </div>
+      </div>
+      {
+        props.icons
+          .filter((icon) => icon.toLowerCase().includes(searchValue))
+          .map((icon, iconIndex) => (
+            <figure
+              className="icon-item"
+              key={iconIndex}
+              style={{
+                border: props.bulkEdit
+                  ? icons[icon] ? '1px solid #e94d0f' : '1px solid #ccc'
+                  : 'none'
+              }}
+              onClick={() => props.bulkEdit && selectDispatch({ type: "selectSingle", data: icon })}>
+              <div className="icon-container">
+                <AutoImg
+                  rootStyle={{background: props.iconBgc}}
+                  src={`/icon/${props.link}/${icon}`}
+                  alt={icon}
+                />
               </div>
-              <div
-                className="icon-tool-container"
-                title="下载图标"
-                onClick={() => handleDownload(icon)}>
-                <svg className="icon icon-tool" aria-hidden="true">
-                  <use xlinkHref="#icon-unie122" />
-                </svg>
-              </div>
-              <div
-                className="icon-tool-container"
-                title="查看大图"
-                onClick={() => handleZoom(icon)}>
-                <svg className="icon icon-tool" aria-hidden="true">
-                  <use xlinkHref="#icon-fangda1" />
-                </svg>
-              </div>
-              <div
-                className="icon-tool-container"
-                title="添加至项目"
-                onClick={() => handleAddTo(icon)}>
-                <svg className="icon icon-tool" aria-hidden="true">
-                  <use xlinkHref="#icon-yiruwenjianjia" />
-                </svg>
-              </div>
-              <div
-                className="icon-tool-container"
-                title="删除图标"
-                onClick={() => handleDelete(icon)}>
-                <svg className="icon icon-tool" aria-hidden="true">
-                  <use xlinkHref="#icon-piliangshanchu" />
-                </svg>
-              </div>
-              <div
-                className="icon-tool-container icon-copy-container"
-                title="复制代码"
-                onClick={() => handleCopyCode(icon)}>
-                <svg className="icon icon-tool" aria-hidden="true">
-                  <use xlinkHref="#icon-fuzhi" />
-                </svg>
-              </div>
-            </div>
-          </figure>
-        ))
+              <figcaption>{icon}</figcaption>
+              {
+                !props.bulkEdit &&
+                <SingleIconTools icon={icon} callback={singleToolClick} />
+              }
+            </figure>
+          )
+        )
       }
       {
         Array(10).fill('').map((fill, fillIndex) => (
@@ -309,6 +308,8 @@ const IconShow = (props: Props) => {
 
 export default connect(
   (state: State) => ({
+    userId: state.userMessage.userId,
+    members: state.currentProject.members,
     currentProject: state.currentProject,
     icons: state.currentProject.icons,
     projectId: state.currentProject.id,

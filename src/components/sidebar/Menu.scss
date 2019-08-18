@@ -6,8 +6,9 @@ nav.menu-container {
 
   .chapter {
     width: calc(100% - 4rem);
+    height: 2rem;
     overflow: hidden;
-    transition: height 1s;
+    transition: height 0.3s;
   }
 
   .chapter-title {
@@ -22,9 +23,12 @@ nav.menu-container {
   }
 
   .chapter-item {
-    padding: 0.5rem 0 0.5rem 2rem;
+    height: 2rem;
+    line-height: 2rem;
+    padding-left: 2rem;
     font-size: 0.9rem;
     white-space: nowrap;
+    box-sizing: border-box;
   }
 
   a.project-menu {

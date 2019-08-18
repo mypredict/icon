@@ -56,8 +56,8 @@ function useIconSize(props: Props) {
   const [iconNewSize, setIconNewSize] = useState([0, 0]);
 
   useEffect(() => {
-    const iconAspectRatio = iconHeight > 0 ? iconWidth / iconHeight : 0;
-    const containerAspectRatio = containerHeight > 0 ? containerWidth / containerHeight : 0;
+    const iconAspectRatio = iconHeight > 0 ? iconWidth / iconHeight : 1;
+    const containerAspectRatio = containerHeight > 0 ? containerWidth / containerHeight : 1;
     const allSize = {
       iconAspectRatio,
       containerWidth,

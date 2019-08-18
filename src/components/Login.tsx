@@ -128,7 +128,7 @@ const Login = (props: Props) => {
           callback={loginCallback}
         />
       </div>
-      <form className="register-container" style={{height: loginShow ? 0 : 'auto'}}>
+      <div className="register-container" style={{height: loginShow ? 0 : 'auto'}}>
         <label className="input-container">
           <Input
             type="text"
@@ -156,7 +156,7 @@ const Login = (props: Props) => {
           btnStyle={{width: "100%", marginTop: "1rem"}}
           callback={registerCallback}
         />
-      </form>
+      </div>
     </div>
   );
 };

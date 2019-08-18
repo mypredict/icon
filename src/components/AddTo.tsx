@@ -1,7 +1,8 @@
-import React, { useState, ChangeEvent } from 'react';
-import { useFetch3 } from '../custom_hooks/index';
+import React, { useState, ChangeEvent, useEffect } from 'react';
+import { useFetch3, useKeyDown } from '../custom_hooks/index';
 import { connect } from 'react-redux';
 import { State, Response } from '../interface';
+import { tooltipConfigCreator } from '../redux/actions';
 import Button from './basic_components/button/Button';
 import './AddTo.scss';
 
@@ -10,9 +11,11 @@ interface Props {
   display: boolean,
   callback: Function,
   path: string,
+  currentIcons: Array<string>,
   teamProjects: Array<string>,
   personalProjects: Array<string>,
-  selectIcons: Array<string>
+  selectIcons: Array<string>,
+  tooltipConfigCreator: Function
 }
 
 const AddTo = (props: Props) => {
@@ -63,6 +66,12 @@ const AddTo = (props: Props) => {
     }
   }
 
+  const { currentIcons } = props;
+  useEffect(() => {
+    setPersonalSelects([]);
+    setTeamSelects([]);
+  }, [currentIcons]);
+
   const request = useFetch3();
   function addToCallback(): void {
     const message = {
@@ -72,9 +81,30 @@ const AddTo = (props: Props) => {
       icons: props.icon ? [props.icon] : props.selectIcons
     };
     request.post('/addTo', message, (data: Response) => {
-      console.log(data);
+      if (data.state === 'error') {
+        props.tooltipConfigCreator({
+          tooltip: '添加图标失败',
+          icon: '#icon-shibai-'
+        });
+        return;
+      }
+      props.tooltipConfigCreator({
+        tooltip: '添加图标成功',
+        icon: '#icon-wancheng1'
+      });
+      props.callback();
     });
   }
+
+  useKeyDown(() => {
+    if (personalSelects.length > 0 || teamSelects.length > 0) {
+      addToCallback();
+    }
+  }, 13);
+
+  useKeyDown(() => {
+    props.callback();
+  }, 27);
 
   return (
     <div
@@ -161,11 +191,41 @@ const AddTo = (props: Props) => {
   );
 };
 
+// 过滤当前项目
+interface FilterProjects {
+  type: string,
+  currentProject: string,
+  currentType: string,
+  projects: Array<string>
+};
+
+function filterProjects(args: FilterProjects): Array<string> {
+  const { type, currentProject, currentType, projects } = args;
+  if (type !== currentType) {
+    return projects;
+  }
+  return projects.filter((project) => project !== currentProject);
+}
+
 export default connect(
   (state: State) => ({
     path: state.currentProject.link,
-    teamProjects: state.userMessage.teamProjects,
-    personalProjects: state.userMessage.personalProjects,
+    currentIcons: state.currentProject.icons,
+    teamProjects: filterProjects({
+      type: 'team',
+      currentProject: state.currentProject.name,
+      currentType: state.currentProject.type,
+      projects: state.userMessage.teamProjects
+    }),
+    personalProjects: filterProjects({
+      type: 'personal',
+      currentProject: state.currentProject.name,
+      currentType: state.currentProject.type,
+      projects: state.userMessage.personalProjects,
+    }),
     selectIcons: state.selectIcons
-  })
+  }),
+  {
+    tooltipConfigCreator
+  }
 )(AddTo);

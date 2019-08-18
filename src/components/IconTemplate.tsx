@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useKeyDown } from '../custom_hooks/index';
 import { connect } from 'react-redux';
 import { State } from '../interface';
 import { tooltipConfigCreator } from '../redux/actions';
@@ -28,6 +29,10 @@ const IconTemplate = (props: Props) => {
   useEffect(() => {
     setTemplateCode(localStorage.getItem(`${projectId}Code`) || '{{iconName}}');
   }, [projectId]);
+
+  useKeyDown(() => {
+    props.callback();
+  }, 27);
 
   return (
     <div

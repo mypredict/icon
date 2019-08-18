@@ -24,6 +24,10 @@ const CreateProject = (props: Props) => {
     name && handleRequest();
   }, 13);
 
+  useKeyDown(() => {
+    props.callback()
+  }, 27);
+
   const requestCreateProject = useFetch3();
   function handleRequest() {
     requestCreateProject.post('/createProject', {

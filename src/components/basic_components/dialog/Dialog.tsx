@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useKeyDown } from '../../../custom_hooks/index';
 import Button from '../button/Button';
 import './Dialog.scss';
 
@@ -14,6 +15,16 @@ interface Props {
 
 const Dialog = (props: Props) => {
   const [inputValue, setInputValue] = useState(props.defaultValue);
+
+  useKeyDown(() => {
+    if ((props.input && inputValue) || !props.input) {
+      props.callback(true, inputValue);
+    }
+  }, 13);
+
+  useKeyDown(() => {
+    props.callback(false);
+  }, 27);
 
   return (
     <div
