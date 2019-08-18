@@ -6,7 +6,8 @@ import {
   bulkEditCreator,
   selectAllCreator,
   tooltipConfigCreator,
-  currentProjectCreator
+  currentProjectCreator,
+  selectIconsCreator
 } from '../redux/actions';
 import Dialog from './basic_components/dialog/Dialog';
 import CreateProject from './CreateProject';
@@ -54,7 +55,8 @@ interface Props {
   bulkEditCreator: Function,
   selectAllCreator: Function,
   tooltipConfigCreator: Function,
-  currentProjectCreator: Function
+  currentProjectCreator: Function,
+  selectIconsCreator: Function
 }
 
 const IconTool = (props: Props) => {
@@ -143,6 +145,7 @@ const IconTool = (props: Props) => {
             ...props.currentProject,
             icons: data.result.icons
           });
+          props.selectIconsCreator([]);
         } else {
           props.tooltipConfigCreator({
             tooltip: '删除图片失败',
@@ -358,6 +361,7 @@ export default connect(
     bulkEditCreator,
     selectAllCreator,
     tooltipConfigCreator,
-    currentProjectCreator
+    currentProjectCreator,
+    selectIconsCreator
   }
 )(IconTool);

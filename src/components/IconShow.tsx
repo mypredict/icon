@@ -161,6 +161,7 @@ const IconShow = (props: Props) => {
             ...props.currentProject,
             icons: data.result.icons
           });
+          props.selectIconsCreator([]);
         } else {
           props.tooltipConfigCreator({
             tooltip: '删除图片失败',
