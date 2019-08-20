@@ -24,7 +24,8 @@ export default {
     iconType: '',
     link: '',
     members: [],
-    icons: []
+    icons: [],
+    iconGroups: {}
   },
   iconBgc: '#fff'
 }

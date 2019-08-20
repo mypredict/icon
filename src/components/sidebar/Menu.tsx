@@ -93,7 +93,7 @@ const Menu = (props: Props) => {
           });
           return;
         }
-        const { _id, userId, name, type, iconType, url, icons } = response.result;
+        const { _id, userId, name, type, iconType, url, icons, iconGroups } = response.result;
         currentProjectCreator({
           id: _id,
           name,
@@ -101,7 +101,8 @@ const Menu = (props: Props) => {
           iconType,
           link: url,
           members: [userId],
-          icons
+          icons,
+          iconGroups,
         });
         bulkEditCreator(false);
         selectAllCreator(false);

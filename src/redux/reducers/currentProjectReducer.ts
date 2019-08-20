@@ -1,6 +1,6 @@
 import states from '../state';
 import { CURRENT_PROJECT } from '../actionTypes';
-import { CurrentProject } from '../../interface';
+import { CurrentProject, IconGroups } from '../../interface';
 
 interface CurrentProjectData {
   id?: string,
@@ -8,6 +8,7 @@ interface CurrentProjectData {
   type?: string,
   members?: Array<string>,
   icons?: Array<string>,
+  iconGroups?: IconGroups,
   link?: string
 }
 

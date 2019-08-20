@@ -6,6 +6,10 @@ export interface UserMessage {
   teamProjects: Array<string>
 }
 
+export interface IconGroups {
+  [key: string]: Array<string>
+}
+
 export interface CurrentProject {
   id: string,
   name: string,
@@ -13,6 +17,7 @@ export interface CurrentProject {
   iconType: string,
   members: Array<string>,
   icons: Array<string>,
+  iconGroups: IconGroups,
   link: string
 }
 
