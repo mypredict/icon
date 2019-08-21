@@ -172,7 +172,8 @@ const IconShow = (props: Props) => {
         if (data.state === 'success') {
           props.currentProjectCreator({
             ...props.currentProject,
-            icons: data.result.icons
+            icons: data.result.icons,
+            iconGroups: data.result.iconGroups
           });
           props.selectIconsCreator([]);
         } else {
@@ -193,7 +194,16 @@ const IconShow = (props: Props) => {
     type === 'handleDelete' && dialogsDispatch({ type: 'deleteIcons' });
     if (type === 'handleCopyCode') {
       const iconTemplate = localStorage.getItem(`${props.projectId}Code`) || '{{iconName}}';
-      copyCode(iconTemplate.replace('{{iconName}}', icon));
+      if (iconTemplate.includes('{{iconName}}')) {
+        copyCode(iconTemplate.replace('{{iconName}}', icon));
+      } else {
+        copyCode(
+          iconTemplate.replace(
+            '{{-iconName}}',
+            icon.slice(0, icon.lastIndexOf('.'))
+          )
+        );
+      }
     }
     if (type === 'handleDownload') {
       window.open(

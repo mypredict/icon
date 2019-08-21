@@ -143,7 +143,8 @@ const IconTool = (props: Props) => {
         if (data.state === 'success') {
           props.currentProjectCreator({
             ...props.currentProject,
-            icons: data.result.icons
+            icons: data.result.icons,
+            iconGroups: data.result.iconGroups
           });
           props.selectIconsCreator([]);
         } else {

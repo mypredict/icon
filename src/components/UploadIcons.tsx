@@ -76,7 +76,8 @@ const UploadIcons = (props: Props) => {
             maxIconsLength = responseData.icons.length;
             props.currentProjectCreator({
               ...props.currentProject,
-              icons: responseData.icons
+              icons: responseData.icons,
+              iconGroups: responseData.iconGroups
             });
           }
         },

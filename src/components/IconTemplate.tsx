@@ -66,7 +66,11 @@ const IconTemplate = (props: Props) => {
             btnStyle={{marginRight: '1rem'}}
           />
           <Button
-            disabled={templateCode.includes('{{iconName}}') ? false : true}
+            disabled={
+              templateCode.includes('{{iconName}}') || templateCode.includes('{{-iconName}}')
+                ? false
+                : true
+            }
             name={"确定"}
             callback={handleCreateNewTemplate}
           />
