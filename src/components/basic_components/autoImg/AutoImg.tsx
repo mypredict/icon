@@ -7,7 +7,8 @@ interface Props {
   alt: string,
   full?: boolean,
   rootStyle?: object,
-  iconStyle?: object
+  iconStyle?: object,
+  draggable?: boolean
 }
 
 const AutoImg = (props: Props) => {
@@ -31,6 +32,7 @@ const AutoImg = (props: Props) => {
       <img
         ref={imgSelf}
         className="icon-self"
+        draggable={props.draggable}
         style={{
           ...props.iconStyle,
           width: iconNewWidth ? iconNewWidth : 0,
@@ -44,7 +46,8 @@ const AutoImg = (props: Props) => {
 };
 
 AutoImg.defaultProps = {
-  full: true
+  full: true,
+  draggable: true
 };
 
 export default AutoImg;

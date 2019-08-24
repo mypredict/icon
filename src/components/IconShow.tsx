@@ -6,7 +6,8 @@ import {
   selectAllCreator,
   selectIconsCreator,
   tooltipConfigCreator,
-  currentProjectCreator
+  currentProjectCreator,
+  bulkEditCreator
 } from '../redux/actions';
 import Search from './basic_components/search/Search';
 import Button from './basic_components/button/Button';
@@ -15,6 +16,9 @@ import IconZoom from './IconZoom';
 import AddTo from './AddTo';
 import AutoImg from './basic_components/autoImg/AutoImg';
 import SingleIconTools from './SingleIconTools';
+import DragContainer from './basic_components/dragContainer/DragContainer';
+import Drag from './basic_components/drag/Drag';
+import { serverPath } from '../config/index';
 import './IconShow.scss';
 
 function arrToObj(arr: Array<string>, status: boolean = false): BoolObj {
@@ -64,7 +68,8 @@ interface Props {
   selectAllCreator: Function,
   selectIconsCreator: Function,
   tooltipConfigCreator: Function,
-  currentProjectCreator: Function
+  currentProjectCreator: Function,
+  bulkEditCreator: Function
 }
 
 const IconShow = (props: Props) => {
@@ -92,11 +97,22 @@ const IconShow = (props: Props) => {
         newSelectIcons = Object.keys(newIcons).filter(icon => newIcons[icon]);
         props.selectIconsCreator(newSelectIcons);
         return newIcons;
+      case 'newIcons':
+        return action.data;
       default:
         return state;
     }
   }
   const [icons, selectDispatch] = useReducer(selectReducer, arrToObj(props.icons));
+
+  const { icons: propsIcons } = props;
+  useEffect(() => {
+    selectDispatch({
+      type: 'newIcons',
+      data: arrToObj(propsIcons)
+    });
+    selectDispatch({ type: 'selectAll' });
+  }, [propsIcons]);
 
   function dialogsReducer(state: DialogsDisplay, action: Action): DialogsDisplay {
     switch (action.type) {
@@ -207,7 +223,7 @@ const IconShow = (props: Props) => {
     }
     if (type === 'handleDownload') {
       window.open(
-        `http://localhost:8000/download?path=${encodeURIComponent(props.link)}&filename=${icon}`,
+        `${serverPath}/download?path=${encodeURIComponent(props.link)}&filename=${icon}`,
         '_self'
       );
     }
@@ -324,11 +340,99 @@ const IconShow = (props: Props) => {
     });
   }
 
+  // 图片拖拽分组
+  const [isGrouping, setIsGrouping] = useState(false);
+  const { bulkEditCreator, bulkEdit } = props;
+
+  useEffect(() => {
+    if (bulkEdit) {
+      return;
+    }
+    setIsGrouping(false);
+  }, [bulkEdit]);
+
+  useEffect(() => {
+    bulkEditCreator(isGrouping);
+  }, [isGrouping, bulkEditCreator]);
+
+  function dropCallback(group: string, icon: string) {
+    const icons: Array<string> = [];
+    if (icon === '...') {
+      icons.push(...props.selectIcons);
+    } else {
+      icons.push(icon);
+    }
+    const message = {
+      icons,
+      projectId: props.projectId,
+      groupName: group
+    };
+    request.post('/moveIconsGroup', message, (data: Response) => {
+      if (data.state === 'success') {
+        props.currentProjectCreator({
+          ...props.currentProject,
+          iconGroups: data.result.iconGroups
+        });
+      } else {
+        props.tooltipConfigCreator({
+          tooltip: '图片分组失败',
+          icon: '#icon-shibai-'
+        });
+      }
+    });
+  }
+
   return (
     <div
       className="icon-show-page"
       style={{display: props.projectId ? "flex" : "none"}}
     >
+      {
+        isGrouping && (
+          <>
+            <DragContainer
+              dragData="..."
+              draggable={isGrouping}
+            >
+              <div className="wait-group-icons">
+                {
+                  props.selectIcons.map((icon, iconIndex) => (
+                    <figure
+                      key={iconIndex}
+                      className="icon-item"
+                      draggable={false}
+                    >
+                      <div className="icon-container">
+                        <AutoImg
+                          rootStyle={{background: props.iconBgc}}
+                          src={`/icon/${props.link}/${icon}`}
+                          alt={icon}
+                          draggable={false}
+                        />
+                      </div>
+                      <figcaption>{icon}</figcaption>
+                    </figure>
+                  ))
+                }
+              </div>
+            </DragContainer>
+            <div className="drop-group-area">
+              {
+                Object.keys(props.iconGroups).map((dropGroup, dropGroupIndex, arr) => (
+                  <Drag
+                    key={dropGroupIndex}
+                    rootStyle={{
+                      marginBottom: arr.length === dropGroupIndex + 1 ? 0 : '1rem'
+                    }}
+                    name={dropGroup}
+                    callback={dropCallback}
+                  />
+                ))
+              }
+            </div>
+          </>
+        )
+      }
       {
         dialogs.editName &&
         <Dialog
@@ -441,9 +545,9 @@ const IconShow = (props: Props) => {
                           callback={() => dialogsDispatch({ type: 'createGroup' })}
                         />
                         <Button
-                          name="图片分组"
+                          name={isGrouping ? "取消分组" : "图片分组"}
                           btnStyle={{ borderRadius: "1rem", marginLeft: '1.5rem' }}
-                          callback={() => {}}
+                          callback={() => setIsGrouping(!isGrouping)}
                         />
                       </>
                     )
@@ -456,28 +560,37 @@ const IconShow = (props: Props) => {
                 .filter(() => group.includes(searchGroup))
                 .filter((icon) => icon.toLowerCase().includes(searchValue))
                 .map((icon, iconIndex) => (
-                  <figure
-                    className="icon-item"
+                  <DragContainer
                     key={iconIndex}
-                    style={{
-                      border: props.bulkEdit
-                        ? icons[icon] ? '1px solid #e94d0f' : '1px solid #ccc'
-                        : 'none'
-                    }}
-                    onClick={() => props.bulkEdit && selectDispatch({ type: "selectSingle", data: icon })}>
-                    <div className="icon-container">
-                      <AutoImg
-                        rootStyle={{background: props.iconBgc}}
-                        src={`/icon/${props.link}/${icon}`}
-                        alt={icon}
-                      />
-                    </div>
-                    <figcaption>{icon}</figcaption>
-                    {
-                      !props.bulkEdit &&
-                      <SingleIconTools icon={icon} callback={singleToolClick} />
-                    }
-                  </figure>
+                    rootStyle={{width: '8rem', marginBottom: '2rem'}}
+                    dragBarStyle={{width: '7rem'}}
+                    dragData={icon}
+                    draggable={isGrouping}
+                  >
+                    <figure
+                      className="icon-item"
+                      draggable={false}
+                      style={{
+                        border: props.bulkEdit
+                          ? icons[icon] ? '1px solid #e94d0f' : '1px solid #ccc'
+                          : 'none'
+                      }}
+                      onClick={() => props.bulkEdit && selectDispatch({ type: "selectSingle", data: icon })}>
+                      <div className="icon-container">
+                        <AutoImg
+                          rootStyle={{background: props.iconBgc}}
+                          src={`/icon/${props.link}/${icon}`}
+                          alt={icon}
+                          draggable={false}
+                        />
+                      </div>
+                      <figcaption>{icon}</figcaption>
+                      {
+                        !props.bulkEdit &&
+                        <SingleIconTools icon={icon} callback={singleToolClick} />
+                      }
+                    </figure>
+                  </DragContainer>
                 )
               )
             }
@@ -511,6 +624,7 @@ export default connect(
     selectAllCreator,
     selectIconsCreator,
     tooltipConfigCreator,
-    currentProjectCreator
+    currentProjectCreator,
+    bulkEditCreator
   }
 )(IconShow);

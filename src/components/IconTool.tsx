@@ -15,6 +15,7 @@ import IconTemplate from './IconTemplate';
 import ColorMatching from './ColorMatching';
 import UploadIcons from './UploadIcons';
 import AddTo from './AddTo';
+import { serverPath } from '../config/index';
 import './IconTool.scss';
 
 interface DialogsDisplay {
@@ -159,7 +160,7 @@ const IconTool = (props: Props) => {
 
   function handleDownload() {
     window.open(
-      `http://localhost:8000/batchDownload?path=${props.link}`,
+      `${serverPath}/batchDownload?path=${props.link}`,
       '_self'
     );
   }
