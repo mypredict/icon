@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useFileSize, useUpload } from '../custom_hooks/index';
 import { connect } from 'react-redux';
-import { State, Response } from '../interface';
+import { State, Response, CurrentProject } from '../interface';
 import { tooltipConfigCreator, currentProjectCreator } from '../redux/actions';
 import Button from './basic_components/button/Button';
 import Upload from './basic_components/upload/Upload';
@@ -24,7 +24,7 @@ interface Props {
   callback: Function,
   projectId: string,
   path: string,
-  currentProject: object,
+  currentProject: CurrentProject,
   tooltipConfigCreator: Function,
   currentProjectCreator: Function
 }
@@ -62,7 +62,8 @@ const UploadIcons = (props: Props) => {
     const newIconsProgress: IconsProgress = {};
     const message = {
       projectId: props.projectId,
-      path: props.path
+      path: props.path,
+      iconType: props.currentProject.iconType
     }
     newFiles.forEach((file) => {
       request(
@@ -127,7 +128,7 @@ const UploadIcons = (props: Props) => {
         <div className="content-container">
           <h3>上传图标</h3>
           <Upload
-            accept="image/*"
+            accept={props.currentProject.iconType === "svg" ? "image/svg+xml" : "image/*"}
             callback={uploadFilesCallback}
           />
           <div className="progress">

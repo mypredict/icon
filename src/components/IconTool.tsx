@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react';
 import { useCopy, useFetch3 } from '../custom_hooks/index';
 import { connect } from 'react-redux';
-import { State, Action, Response } from '../interface';
+import { State, Action, Response, CurrentProject } from '../interface';
 import {
   bulkEditCreator,
   selectAllCreator,
@@ -46,7 +46,7 @@ interface Props {
   bulkEdit: boolean,
   selectIcons: Array<string>,
   selectAll: boolean,
-  currentProject: object,
+  currentProject: CurrentProject,
   icons: Array<string>,
   link: string,
   projectId: string,
@@ -138,7 +138,8 @@ const IconTool = (props: Props) => {
       const postMessage = {
         iconNames: props.selectIcons,
         projectId: props.projectId,
-        path: props.link
+        path: props.link,
+        iconType: props.currentProject.iconType
       };
       request.post('/deleteIcon', postMessage, (data: Response) => {
         if (data.state === 'success') {

@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect, useState } from 'react';
 import { useCopy, useFetch3 } from '../custom_hooks/index';
 import { connect } from 'react-redux';
-import { BoolObj, State, Action, Response, IconGroups } from '../interface';
+import { BoolObj, State, Action, Response, IconGroups, CurrentProject } from '../interface';
 import {
   selectAllCreator,
   selectIconsCreator,
@@ -56,7 +56,7 @@ const dialogsDisplay = {
 interface Props {
   userId: string,
   members: Array<string>,
-  currentProject: object,
+  currentProject: CurrentProject,
   icons: Array<string>,
   iconGroups: IconGroups,
   projectId: string,
@@ -151,13 +151,15 @@ const IconShow = (props: Props) => {
         projectId: props.projectId,
         path: props.link,
         newName,
-        oldName: dialogs.iconName
+        oldName: dialogs.iconName,
+        iconType: props.currentProject.iconType
       };
       request.post('/iconRename', message, (data: Response) => {
         if (data.state === 'success') {
           props.currentProjectCreator({
             ...props.currentProject,
-            icons: data.result.icons
+            icons: data.result.icons,
+            iconGroups: data.result.iconGroups
           });
           return;
         }
@@ -182,7 +184,8 @@ const IconShow = (props: Props) => {
       const postMessage = {
         iconNames: [dialogs.iconName],
         projectId: props.projectId,
-        path: props.link
+        path: props.link,
+        iconType: props.currentProject.iconType
       };
       request.post('/deleteIcon', postMessage, (data: Response) => {
         if (data.state === 'success') {
