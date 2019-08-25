@@ -249,11 +249,20 @@ const IconShow = (props: Props) => {
       dialogsDispatch({ type: 'createGroup' });
       return;
     }
+    const isNumber = /^\d+$/;
+    if (isNumber.test(groupName)) {
+      props.tooltipConfigCreator({
+        tooltip: '分组名不能是纯数字',
+        icon: '#icon-shibai-',
+        rootStyle: { boxShadow: 'none' }
+      });
+      return;
+    }
     if (Object.keys(props.iconGroups).includes(groupName)) {
-      dialogsDispatch({ type: 'createGroup' });
       props.tooltipConfigCreator({
         tooltip: '已存在此分组名',
-        icon: '#icon-shibai-'
+        icon: '#icon-shibai-',
+        rootStyle: { boxShadow: 'none' }
       });
       return;
     }
@@ -426,7 +435,9 @@ const IconShow = (props: Props) => {
                     }}
                     name={dropGroup}
                     callback={dropCallback}
-                  />
+                  >
+                    <div className="group-font">{dropGroup}</div>
+                  </Drag>
                 ))
               }
             </div>

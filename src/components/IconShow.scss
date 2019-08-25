@@ -18,6 +18,17 @@
     background: rgba(0, 0, 0, 0.3);
     overflow-y: auto;
     z-index: 100;
+
+    .group-font {
+      width: 100%;
+      padding: 0 1rem;
+      line-height: 1.4;
+      color: #77c0f1;
+      font-size: 2rem;
+      text-align: center;
+      word-wrap: break-word;
+      box-sizing: border-box;
+    }
   }
 
   .wait-group-icons {

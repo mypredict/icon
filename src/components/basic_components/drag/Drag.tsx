@@ -2,6 +2,7 @@ import React, { useState, DragEvent } from 'react';
 import './Drag.scss';
 
 interface Props {
+  children?: any,
   rootStyle?: object,
   name: string,
   callback: Function
@@ -37,7 +38,7 @@ const Drag = (props: Props) => {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      {props.name}
+      {props.children}
     </div>
   );
 };

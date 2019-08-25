@@ -52,13 +52,13 @@
       position: absolute;
       content: "复制链接成功";
       left: 50%;
-      top: calc(100% + 0.5rem);
+      top: 0;
       transform: translateX(-50%);
       font-size: 0.8rem;
       color: #159ed4;
       white-space: nowrap;
       opacity: 0;
-      transition: opacity 1s ease-in 0.5s, top 1s ease-in;
+      transition: opacity 1s ease-in 0.5s, top 0.5s ease-in 1s;
     }
 
     &:active:after {
