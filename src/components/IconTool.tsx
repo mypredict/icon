@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import { useCopy, useFetch3 } from '../custom_hooks/index';
 import { connect } from 'react-redux';
 import { State, Action, Response, CurrentProject } from '../interface';
@@ -159,6 +159,25 @@ const IconTool = (props: Props) => {
     }
   }
 
+  const [loading, setLoading] = useState(false);
+  function handleUpdateIconfont() {
+    setLoading(true);
+    request.post('/updateIconfont', { path: props.link }, (response: Response) => {
+      setLoading(false);
+      if (response.state === 'success') {
+        props.tooltipConfigCreator({
+          tooltip: '代码更新成功',
+          icon: '#icon-wancheng1'
+        });
+      } else {
+        props.tooltipConfigCreator({
+          tooltip: '代码更新失败',
+          icon: '#icon-shibai-'
+        });
+      }
+    });
+  }
+
   function handleDownload() {
     window.open(
       `${serverPath}/batchDownload?path=${props.link}`,
@@ -277,6 +296,18 @@ const IconTool = (props: Props) => {
         >
           共{props.bulkEdit ? `${props.selectIcons.length}/` : ''}{props.icons.length}个图标
         </span>
+        <button
+          className={`btn-operation`}
+          onClick={handleUpdateIconfont}
+        >
+          <svg
+            className={`icon icon-operation ${loading && "icon-update-iconfont"}`}
+            aria-hidden="true"
+          >
+            <use xlinkHref="#icon-refresh" />
+          </svg>
+          更新代码
+        </button>
         <button
           className="btn-operation"
           onClick={() => dispatch({ type: 'uploadIcons' })}
