@@ -29,6 +29,8 @@ function arrToObj(arr: Array<string>, status: boolean = false): BoolObj {
   return obj;
 }
 
+const defaultIconTemplate = '{{iconName}}';
+
 interface DialogsDisplay {
   editName: boolean,
   createGroup: boolean,
@@ -212,17 +214,17 @@ const IconShow = (props: Props) => {
     type === 'handleAddTo' && dialogsDispatch({ type: 'addToProject' });
     type === 'handleDelete' && dialogsDispatch({ type: 'deleteIcons' });
     if (type === 'handleCopyCode') {
-      const iconTemplate = localStorage.getItem(`${props.projectId}Code`) || '{{iconName}}';
-      if (iconTemplate.includes('{{iconName}}')) {
-        copyCode(iconTemplate.replace('{{iconName}}', icon));
+      let iconTemplate = '';
+      const iconName = icon.slice(0, icon.lastIndexOf('.'));
+      const iconType = icon.slice(icon.lastIndexOf('.') + 1);
+      if (iconType === 'svg') {
+        iconTemplate = localStorage.getItem(`${props.projectId}SvgCode`) || defaultIconTemplate;
       } else {
-        copyCode(
-          iconTemplate.replace(
-            '{{-iconName}}',
-            icon.slice(0, icon.lastIndexOf('.'))
-          )
-        );
+        iconTemplate = localStorage.getItem(`${props.projectId}ImageCode`) || defaultIconTemplate;
       }
+      iconTemplate = iconTemplate.replace(/{{iconName}}/g, icon);
+      iconTemplate = iconTemplate.replace(/{{-iconName}}/g, iconName);
+      copyCode(iconTemplate);
     }
     if (type === 'handleDownload') {
       window.open(
@@ -374,6 +376,9 @@ const IconShow = (props: Props) => {
     } else {
       icons.push(icon);
     }
+    if (icons.length <= 0) {
+      return;
+    }
     const message = {
       icons,
       projectId: props.projectId,
@@ -384,6 +389,10 @@ const IconShow = (props: Props) => {
         props.currentProjectCreator({
           ...props.currentProject,
           iconGroups: data.result.iconGroups
+        });
+        props.tooltipConfigCreator({
+          tooltip: '图片分组成功',
+          icon: '#icon-wancheng1'
         });
       } else {
         props.tooltipConfigCreator({
@@ -413,6 +422,7 @@ const IconShow = (props: Props) => {
                       key={iconIndex}
                       className="icon-item"
                       draggable={false}
+                      onClick={() => selectDispatch({ type: "selectSingle", data: icon })}
                     >
                       <div className="icon-container">
                         <AutoImg

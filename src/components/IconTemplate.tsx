@@ -13,11 +13,16 @@ interface Props {
   tooltipConfigCreator: Function
 }
 
+const defaultIconTemplate = '{{iconName}}';
+
 const IconTemplate = (props: Props) => {
-  const [templateCode, setTemplateCode] = useState('{{iconName}}');
+  const [templateLabel, setTemplateLabel] = useState('image');
+  const [templateImageCode, setTemplateImageCode] = useState(defaultIconTemplate);
+  const [templateSvgCode, setTemplateSvgCode] = useState(defaultIconTemplate);
 
   function handleCreateNewTemplate() {
-    localStorage.setItem(`${props.projectId}Code`, templateCode);
+    localStorage.setItem(`${props.projectId}ImageCode`, templateImageCode);
+    localStorage.setItem(`${props.projectId}SvgCode`, templateSvgCode);
     props.tooltipConfigCreator({
       tooltip: '更改模板代码成功',
       icon: '#icon-wancheng1'
@@ -27,7 +32,8 @@ const IconTemplate = (props: Props) => {
 
   const { projectId } = props;
   useEffect(() => {
-    setTemplateCode(localStorage.getItem(`${projectId}Code`) || '{{iconName}}');
+    setTemplateImageCode(localStorage.getItem(`${projectId}ImageCode`) || defaultIconTemplate);
+    setTemplateSvgCode(localStorage.getItem(`${projectId}SvgCode`) || defaultIconTemplate);
   }, [projectId]);
 
   useKeyDown(() => {
@@ -50,14 +56,37 @@ const IconTemplate = (props: Props) => {
           />
         </header>
         <div className="content-container">
-          <h3>图片链接模板:</h3>
-          <textarea
-            className="icon-template"
-            wrap="off"
-            spellCheck={false}
-            value={templateCode}
-            onChange={(e) => setTemplateCode(e.target.value)}
-          />
+          <div className="template-label-container">
+            <Button
+              name="图片链接模板"
+              btnBackground={templateLabel === "image" ? "#eee" : "#fff"}
+              callback={() => setTemplateLabel('image')}
+            />
+            <Button
+              name="SVG链接模板"
+              btnBackground={templateLabel === "svg" ? "#eee" : "#fff"}
+              callback={() => setTemplateLabel('svg')}
+            />
+          </div>
+          {
+            templateLabel === 'svg' ? (
+              <textarea
+                className="icon-template"
+                wrap="off"
+                spellCheck={false}
+                value={templateSvgCode}
+                onChange={(e) => setTemplateSvgCode(e.target.value)}
+              />
+            ) : (
+              <textarea
+                className="icon-template"
+                wrap="off"
+                spellCheck={false}
+                value={templateImageCode}
+                onChange={(e) => setTemplateImageCode(e.target.value)}
+              />
+            )
+          }
         </div>
         <footer className="btn-container">
           <Button
@@ -67,7 +96,8 @@ const IconTemplate = (props: Props) => {
           />
           <Button
             disabled={
-              templateCode.includes('{{iconName}}') || templateCode.includes('{{-iconName}}')
+              (templateImageCode.includes('{{iconName}}') || templateImageCode.includes('{{-iconName}}')) &&
+              (templateSvgCode.includes('{{iconName}}') || templateSvgCode.includes('{{-iconName}}'))
                 ? false
                 : true
             }
