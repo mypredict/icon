@@ -255,14 +255,7 @@ const IconShow = (props: Props) => {
       return;
     }
     const isNumber = /^\d+$/;
-    if (isNumber.test(groupName)) {
-      props.tooltipConfigCreator({
-        tooltip: '分组名不能是纯数字',
-        icon: '#icon-shibai-',
-        rootStyle: { boxShadow: 'none' }
-      });
-      return;
-    }
+    isNumber.test(groupName) && (groupName += ' ');
     if (Object.keys(props.iconGroups).includes(groupName)) {
       props.tooltipConfigCreator({
         tooltip: '已存在此分组名',

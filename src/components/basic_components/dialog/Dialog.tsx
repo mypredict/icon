@@ -7,7 +7,7 @@ interface Props {
   display: boolean,
   title: string,
   input?: boolean,
-  defaultValue?: string,
+  defaultValue: string,
   inputPlaceholder?: string,
   maxLength?: number,
   callback: Function
@@ -18,7 +18,7 @@ const Dialog = (props: Props) => {
 
   useKeyDown(() => {
     if ((props.input && inputValue) || !props.input) {
-      props.callback(true, inputValue);
+      props.callback(true, inputValue.trim());
     }
   }, 13);
 
@@ -51,7 +51,7 @@ const Dialog = (props: Props) => {
                 type="text"
                 placeholder={props.inputPlaceholder}
                 maxLength={props.maxLength}
-                onChange={(e) => setInputValue(e.target.value.trim())}
+                onChange={(e) => setInputValue(e.target.value)}
               />
             )
           }
@@ -65,7 +65,7 @@ const Dialog = (props: Props) => {
           <Button
             name={"确定"}
             disabled={props.input ? inputValue ? false : true : false}
-            callback={() => props.callback(true, inputValue)}
+            callback={() => props.callback(true, inputValue.trim())}
           />
         </footer>
       </div>
