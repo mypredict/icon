@@ -367,7 +367,7 @@ const IconTool = (props: Props) => {
           }
         </button>
         {
-          !props.bulkEdit && (
+          props.bulkEdit && (
             <Checkbox
               label="全选"
               labelStyle={{
