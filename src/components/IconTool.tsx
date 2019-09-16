@@ -15,6 +15,7 @@ import IconTemplate from './IconTemplate';
 import ColorMatching from './ColorMatching';
 import UploadIcons from './UploadIcons';
 import AddTo from './AddTo';
+import Checkbox from './basic_components/checkbox/Checkbox';
 import { serverPath } from '../config/index';
 import './IconTool.scss';
 
@@ -365,13 +366,30 @@ const IconTool = (props: Props) => {
             props.bulkEdit ? '删除图标' : '删除项目'
           }
         </button>
-        <input
-          style={{display: props.bulkEdit ? 'block' : 'none'}}
-          className="select-all-icon"
-          type="checkbox"
-          checked={props.selectAll}
-          onChange={(event) => props.selectAllCreator(event.target.checked)}
-        />
+        {
+          !props.bulkEdit && (
+            <Checkbox
+              label="全选"
+              labelStyle={{
+                color: '#777',
+                fontSize: '0.8rem',
+                fontWeight: '500'
+              }}
+              checked={props.selectAll}
+              checkedStyle={{
+                width: '0.8rem',
+                height: '0.8rem',
+                marginLeft: '1rem'
+              }}
+              unCheckedStyle={{
+                width: '0.8rem',
+                height: '0.8rem',
+                marginLeft: '1rem'
+              }}
+              onChange={props.selectAllCreator}
+            />
+          )
+        }
       </div>
     </div>
   );
