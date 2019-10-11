@@ -14,7 +14,7 @@ import Button from './basic_components/button/Button';
 import Dialog from './basic_components/dialog/Dialog';
 import IconZoom from './IconZoom';
 import AddTo from './AddTo';
-import AutoImg from './basic_components/autoImg/AutoImg';
+import AutoFitImg from './basic_components/AutoFitImg/AutoFitImg';
 import SingleIconTools from './SingleIconTools';
 import DragContainer from './basic_components/dragContainer/DragContainer';
 import Drag from './basic_components/drag/Drag';
@@ -418,8 +418,7 @@ const IconShow = (props: Props) => {
                       onClick={() => selectDispatch({ type: "selectSingle", data: icon })}
                     >
                       <div className="icon-container">
-                        <AutoImg
-                          rootStyle={{background: props.iconBgc}}
+                        <AutoFitImg
                           src={`/icon/${props.link}/${icon}`}
                           alt={icon}
                           draggable={false}
@@ -594,8 +593,7 @@ const IconShow = (props: Props) => {
                       }}
                       onClick={() => props.bulkEdit && selectDispatch({ type: "selectSingle", data: icon })}>
                       <div className="icon-container">
-                        <AutoImg
-                          rootStyle={{background: props.iconBgc}}
+                        <AutoFitImg
                           src={`/icon/${props.link}/${icon}`}
                           alt={icon}
                           draggable={false}

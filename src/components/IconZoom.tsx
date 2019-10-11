@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State } from '../interface';
-import AutoImg from './basic_components/autoImg/AutoImg';
+import AutoFitImg from './basic_components/AutoFitImg/AutoFitImg';
 import './IconZoom.scss';
 
 interface Props {
@@ -25,10 +25,10 @@ const IconZoom = (props: Props) => {
       >
         {
           props.display && (
-            <AutoImg
+            <AutoFitImg
               src={props.src}
               alt={props.alt}
-              full={false}
+              objectFit="contain"
             />
           )
         }
